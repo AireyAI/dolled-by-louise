@@ -1926,15 +1926,10 @@
   </div>
 
   <script>
-    // ── Welcome gate — redirect to welcome if not entered this session ──
+    // ── Welcome gate — send first-time visitors to welcome screen ──
     if (!sessionStorage.getItem('dbl_entered')) {
-      sessionStorage.setItem('dbl_entered', '1');
-      // Only redirect if arriving directly (not from welcome page)
-      if (!document.referrer.includes('welcome.html')) {
-        window.location.replace('welcome.html');
-      }
+      window.location.replace('welcome.html');
     }
-    sessionStorage.setItem('dbl_entered', '1');
   </script>
   <script>
     // ── Scroll reveals ──

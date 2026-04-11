@@ -928,9 +928,158 @@
     }
     #btt:hover { border-color: var(--rose); transform: translateY(-2px); }
     #btt.vis { opacity: 1; pointer-events: auto; }
+
+    /* ── My Lash Bar ── */
+    #lashBar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      transform: translateY(-100%);
+      transition: transform 0.5s var(--spring);
+    }
+    #lashBar.show { transform: translateY(0); }
+    #lashBar.show ~ * #nav,
+    body.bar-open #nav { top: 40px; }
+
+    .lb-strip {
+      height: 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px; gap: 12px;
+      font-family: 'DM Sans', sans-serif; font-size: 12px;
+      background: var(--plum); color: rgba(252,232,240,0.85);
+    }
+    .lb-strip.overdue { background: #7a1a35; }
+    .lb-strip.soon    { background: #6b2a10; }
+
+    .lb-left  { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+    .lb-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+    .lb-name  { color: #fce8f0; font-weight: 500; white-space: nowrap; }
+    .lb-msg   { color: rgba(252,232,240,0.7); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .lb-status {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(255,255,255,0.08); border-radius: 20px;
+      padding: 2px 10px; font-size: 11px; white-space: nowrap; flex-shrink: 0;
+    }
+    .lb-status.ok     { color: #a8f0c6; }
+    .lb-status.soon   { color: #fde68a; }
+    .lb-status.overdue{ color: #fca5a5; }
+
+    .lb-book {
+      background: var(--rose); color: #fff; border: none;
+      padding: 4px 14px; border-radius: 20px;
+      font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500;
+      letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none;
+      cursor: pointer; white-space: nowrap;
+      transition: opacity 0.2s;
+    }
+    .lb-book:hover { opacity: 0.85; }
+
+    .lb-edit {
+      background: none; border: none; cursor: pointer;
+      color: rgba(252,232,240,0.4); font-size: 14px; padding: 0 2px;
+      transition: color 0.2s;
+    }
+    .lb-edit:hover { color: rgba(252,232,240,0.8); }
+
+    /* Setup prompt */
+    #lashSetup {
+      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
+      z-index: 400; width: min(420px, calc(100vw - 32px));
+      background: var(--surface);
+      border: 1px solid rgba(194,104,142,0.28);
+      border-radius: 18px;
+      padding: 28px;
+      box-shadow: 0 8px 40px rgba(45,20,35,0.18), 0 2px 8px rgba(45,20,35,0.08);
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.4s var(--ease), transform 0.4s var(--spring);
+    }
+    #lashSetup.show { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+
+    .ls-close {
+      position: absolute; top: 14px; right: 16px;
+      background: none; border: none; cursor: pointer;
+      font-size: 18px; color: var(--muted); line-height: 1;
+    }
+    .ls-title {
+      font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400;
+      font-size: 20px; color: var(--text); margin-bottom: 4px;
+    }
+    .ls-sub {
+      font-size: 12px; color: var(--muted); margin-bottom: 20px; line-height: 1.5;
+    }
+    .ls-form { display: flex; flex-direction: column; gap: 10px; }
+    .ls-input {
+      width: 100%; padding: 10px 14px;
+      background: var(--base); border: 1.5px solid var(--border);
+      border-radius: 9px; font-family: 'DM Sans', sans-serif;
+      font-size: 13px; color: var(--text); outline: none;
+      transition: border-color 0.2s;
+    }
+    .ls-input:focus { border-color: var(--rose); }
+    .ls-input::placeholder { color: var(--muted); }
+    .ls-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .ls-save {
+      width: 100%; justify-content: center;
+      font-size: 13px; padding: 12px 20px; margin-top: 2px;
+    }
+    .ls-skip {
+      background: none; border: none; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-size: 11px;
+      color: var(--muted); text-align: center; display: block;
+      margin-top: 10px; letter-spacing: 0.04em;
+      transition: color 0.2s;
+    }
+    .ls-skip:hover { color: var(--rose); }
   </style>
 </head>
 <body>
+
+  <!-- ══ MY LASH BAR ══ -->
+  <div id="lashBar" role="banner" aria-label="Your personal lash tracker">
+    <div class="lb-strip" id="lbStrip">
+      <div class="lb-left">
+        <span class="lb-name" id="lbName"></span>
+        <span class="lb-msg" id="lbMsg"></span>
+        <span class="lb-status" id="lbStatus"></span>
+      </div>
+      <div class="lb-right">
+        <a href="#" id="lbBook" class="lb-book" target="_blank" rel="noopener">Book now</a>
+        <button class="lb-edit" id="lbEdit" aria-label="Edit your profile" title="Edit">✎</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SETUP PROMPT ══ -->
+  <div id="lashSetup" role="dialog" aria-modal="true" aria-label="Personalise your experience">
+    <button class="ls-close" id="lsClose" aria-label="Dismiss">×</button>
+    <p class="ls-title">Personalise your experience 💕</p>
+    <p class="ls-sub">We'll remind you when your lashes are due — no account needed, stays in your browser.</p>
+    <form class="ls-form" id="lsForm">
+      <input type="text"  class="ls-input" id="lsName"    placeholder="Your first name" required maxlength="30">
+      <select class="ls-input" id="lsService">
+        <option value="">Your last service…</option>
+        <option value="Korean Lash Lift"   data-weeks="7">Korean Lash Lift</option>
+        <option value="LVL Lashes"         data-weeks="7">LVL Lashes</option>
+        <option value="Lift + Tint Combo"  data-weeks="7">Lift + Tint Combo</option>
+        <option value="Classic Extensions" data-weeks="3">Classic Extensions</option>
+        <option value="Hybrid Extensions"  data-weeks="3">Hybrid Extensions</option>
+        <option value="Russian Volume"     data-weeks="2">Russian Volume</option>
+        <option value="Mega Volume"        data-weeks="2">Mega Volume</option>
+        <option value="Infills"            data-weeks="3">Infills</option>
+      </select>
+      <div class="ls-row">
+        <div>
+          <label style="font-size:11px;color:var(--muted);letter-spacing:.08em;display:block;margin-bottom:5px;">DATE OF LAST VISIT</label>
+          <input type="date" class="ls-input" id="lsDate" required>
+        </div>
+        <div>
+          <label style="font-size:11px;color:var(--muted);letter-spacing:.08em;display:block;margin-bottom:5px;">NEXT VISIT (optional)</label>
+          <input type="date" class="ls-input" id="lsNext">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-rose ls-save">Save my profile</button>
+    </form>
+    <button class="ls-skip" id="lsSkip">Not now — maybe later</button>
+  </div>
 
   <a href="#main" class="skip">Skip to content</a>
 
@@ -1613,9 +1762,15 @@
 
     // ── Nav scroll ──
     const nav = document.getElementById('nav');
+    function updateNavTop() {
+      const barShowing = document.getElementById('lashBar').classList.contains('show');
+      nav.style.top = barShowing ? '40px' : '0';
+    }
     window.addEventListener('scroll', () => {
       nav.classList.toggle('scrolled', window.scrollY > 40);
     }, { passive: true });
+    // Expose so lash bar can call it after showing
+    window._updateNavTop = updateNavTop;
 
     // ── Back to top ──
     const btt = document.getElementById('btt');
@@ -1651,6 +1806,138 @@
       slider.addEventListener('pointermove', e => { if(drag) setPos(e.clientX); });
       slider.addEventListener('pointerup',   () => { drag = false; });
       slider.addEventListener('pointercancel', () => { drag = false; });
+    })();
+
+    // ── My Lash Bar ──
+    (function() {
+      const LS_KEY = 'dbl_profile';
+      const bar    = document.getElementById('lashBar');
+      const strip  = document.getElementById('lbStrip');
+      const setup  = document.getElementById('lashSetup');
+
+      function getProfile() {
+        try { return JSON.parse(localStorage.getItem(LS_KEY)) || null; } catch(e) { return null; }
+      }
+      function saveProfile(p) { localStorage.setItem(LS_KEY, JSON.stringify(p)); }
+
+      function daysUntil(dateStr) {
+        const now   = new Date(); now.setHours(0,0,0,0);
+        const target = new Date(dateStr); target.setHours(0,0,0,0);
+        return Math.round((target - now) / 86400000);
+      }
+
+      function renderBar(p) {
+        const nameEl   = document.getElementById('lbName');
+        const msgEl    = document.getElementById('lbMsg');
+        const statusEl = document.getElementById('lbStatus');
+        const bookEl   = document.getElementById('lbBook');
+
+        nameEl.textContent = 'Hi ' + p.name + ' 💕';
+
+        // Determine urgency from next/due date
+        let days = null;
+        let dueDate = p.nextDate || null;
+
+        if (!dueDate && p.lastDate && p.weeks) {
+          const d = new Date(p.lastDate);
+          d.setDate(d.getDate() + p.weeks * 7);
+          dueDate = d.toISOString().split('T')[0];
+        }
+
+        if (dueDate) { days = daysUntil(dueDate); }
+
+        strip.className = 'lb-strip';
+        statusEl.className = 'lb-status';
+
+        if (days === null) {
+          msgEl.textContent = 'Your ' + p.service + ' tracker is active.';
+          statusEl.textContent = '✦ Active';
+          statusEl.classList.add('ok');
+        } else if (days < 0) {
+          const abs = Math.abs(days);
+          msgEl.textContent = 'Your ' + p.service + (abs === 1 ? ' was due yesterday.' : ' was due ' + abs + ' days ago.');
+          statusEl.textContent = '⚠ Overdue';
+          statusEl.classList.add('overdue');
+          strip.classList.add('overdue');
+        } else if (days === 0) {
+          msgEl.textContent = 'Your ' + p.service + ' is due today!';
+          statusEl.textContent = '⚠ Due today';
+          statusEl.classList.add('overdue');
+          strip.classList.add('overdue');
+        } else if (days <= 7) {
+          msgEl.textContent = 'Your ' + p.service + ' is due in ' + days + (days === 1 ? ' day.' : ' days.');
+          statusEl.textContent = '● Due soon';
+          statusEl.classList.add('soon');
+          strip.classList.add('soon');
+        } else {
+          msgEl.textContent = 'Your ' + p.service + ' is due in ' + days + ' days.';
+          statusEl.textContent = '✓ Looking good';
+          statusEl.classList.add('ok');
+        }
+
+        // WhatsApp link
+        const svc = encodeURIComponent(p.service);
+        const name = encodeURIComponent(p.name);
+        bookEl.href = 'https://wa.me/447464557236?text=Hi+Louise!+It%27s+' + name + '+%F0%9F%92%95+I%27d+like+to+book+my+' + svc;
+
+        bar.classList.add('show');
+        document.body.style.paddingTop = '40px';
+        if (window._updateNavTop) window._updateNavTop();
+      }
+
+      function showSetup() {
+        // Set max date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('lsDate').max = today;
+        document.getElementById('lsNext').min = today;
+        setup.classList.add('show');
+      }
+
+      function hideSetup() { setup.classList.remove('show'); }
+
+      // Save form
+      document.getElementById('lsForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name    = document.getElementById('lsName').value.trim();
+        const sel     = document.getElementById('lsService');
+        const service = sel.value;
+        const weeks   = parseInt(sel.selectedOptions[0]?.dataset.weeks || '0');
+        const lastDate = document.getElementById('lsDate').value;
+        const nextDate = document.getElementById('lsNext').value || null;
+        if (!name || !service || !lastDate) return;
+        const p = { name, service, weeks, lastDate, nextDate };
+        saveProfile(p);
+        hideSetup();
+        renderBar(p);
+      });
+
+      // Edit button → reopen setup pre-filled
+      document.getElementById('lbEdit').addEventListener('click', function() {
+        const p = getProfile();
+        if (p) {
+          document.getElementById('lsName').value    = p.name;
+          document.getElementById('lsService').value = p.service;
+          document.getElementById('lsDate').value    = p.lastDate || '';
+          document.getElementById('lsNext').value    = p.nextDate || '';
+        }
+        showSetup();
+      });
+
+      // Close / skip
+      document.getElementById('lsClose').addEventListener('click', hideSetup);
+      document.getElementById('lsSkip').addEventListener('click', function() {
+        hideSetup();
+        localStorage.setItem('dbl_setup_dismissed', '1');
+      });
+
+      // Init
+      const profile = getProfile();
+      if (profile) {
+        renderBar(profile);
+      } else if (!localStorage.getItem('dbl_setup_dismissed')) {
+        // Show prompt after 4s on first visit
+        setTimeout(showSetup, 4000);
+      }
     })();
 
     // ── Hero panel: tab switching ──

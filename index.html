@@ -980,55 +980,141 @@
     }
     .lb-edit:hover { color: rgba(252,232,240,0.8); }
 
-    /* Setup prompt */
+    /* ── Setup prompt ── */
     #lashSetup {
-      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
-      z-index: 400; width: min(420px, calc(100vw - 32px));
-      background: var(--surface);
-      border: 1px solid rgba(194,104,142,0.28);
-      border-radius: 18px;
-      padding: 28px;
-      box-shadow: 0 8px 40px rgba(45,20,35,0.18), 0 2px 8px rgba(45,20,35,0.08);
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(30px);
+      z-index: 400; width: min(400px, calc(100vw - 24px));
+      background: var(--plum);
+      border: 1px solid rgba(194,104,142,0.3);
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 16px 60px rgba(45,20,35,0.45), 0 4px 16px rgba(45,20,35,0.2);
       opacity: 0; pointer-events: none;
-      transition: opacity 0.4s var(--ease), transform 0.4s var(--spring);
+      transition: opacity 0.45s var(--ease), transform 0.45s var(--spring);
     }
     #lashSetup.show { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
 
+    .ls-glow {
+      position: absolute; top: -60px; left: 50%; transform: translateX(-50%);
+      width: 280px; height: 180px; border-radius: 50%; pointer-events: none;
+      background: radial-gradient(ellipse, rgba(194,104,142,0.35) 0%, transparent 70%);
+    }
+
+    .ls-inner { padding: 28px 28px 22px; position: relative; z-index: 1; }
+
+    .ls-toprow {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 22px;
+    }
+    .ls-dots { display: flex; gap: 6px; }
+    .ls-dot {
+      width: 20px; height: 3px; border-radius: 2px;
+      background: rgba(194,104,142,0.2);
+      transition: background 0.35s, width 0.35s;
+    }
+    .ls-dot.active { background: var(--rose); width: 32px; }
+    .ls-dot.done   { background: rgba(194,104,142,0.5); }
+
     .ls-close {
-      position: absolute; top: 14px; right: 16px;
-      background: none; border: none; cursor: pointer;
-      font-size: 18px; color: var(--muted); line-height: 1;
+      background: rgba(255,255,255,0.08); border: none; cursor: pointer;
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; color: rgba(252,232,240,0.5);
+      transition: background 0.2s, color 0.2s;
     }
-    .ls-title {
+    .ls-close:hover { background: rgba(255,255,255,0.14); color: rgba(252,232,240,0.9); }
+
+    .ls-step { display: none; animation: fadeUp 0.35s var(--spring) both; }
+    .ls-step.active { display: block; }
+
+    .ls-eyebrow {
+      font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 500;
+      letter-spacing: 0.24em; text-transform: uppercase;
+      color: var(--rose-light); margin-bottom: 6px;
+    }
+    .ls-q {
       font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400;
-      font-size: 20px; color: var(--text); margin-bottom: 4px;
+      font-size: 22px; color: #fce8f0; line-height: 1.25; margin-bottom: 20px;
     }
-    .ls-sub {
-      font-size: 12px; color: var(--muted); margin-bottom: 20px; line-height: 1.5;
+
+    /* Step 1 — name */
+    .ls-name-input {
+      width: 100%; padding: 14px 18px;
+      background: rgba(255,255,255,0.07); border: 1.5px solid rgba(194,104,142,0.3);
+      border-radius: 12px;
+      font-family: 'Playfair Display', serif; font-style: italic;
+      font-size: 20px; color: #fce8f0; outline: none;
+      transition: border-color 0.2s, background 0.2s;
     }
-    .ls-form { display: flex; flex-direction: column; gap: 10px; }
-    .ls-input {
-      width: 100%; padding: 10px 14px;
-      background: var(--base); border: 1.5px solid var(--border);
-      border-radius: 9px; font-family: 'DM Sans', sans-serif;
-      font-size: 13px; color: var(--text); outline: none;
-      transition: border-color 0.2s;
+    .ls-name-input::placeholder { color: rgba(252,232,240,0.25); }
+    .ls-name-input:focus { border-color: var(--rose); background: rgba(255,255,255,0.1); }
+
+    /* Step 2 — service pills */
+    .ls-services {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
     }
-    .ls-input:focus { border-color: var(--rose); }
-    .ls-input::placeholder { color: var(--muted); }
-    .ls-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .ls-save {
-      width: 100%; justify-content: center;
-      font-size: 13px; padding: 12px 20px; margin-top: 2px;
+    .ls-svc {
+      padding: 10px 12px; border-radius: 11px;
+      background: rgba(255,255,255,0.06); border: 1.5px solid rgba(194,104,142,0.18);
+      cursor: pointer; text-align: left;
+      font-family: 'DM Sans', sans-serif; font-size: 12px; color: rgba(252,232,240,0.75);
+      transition: border-color 0.2s, background 0.2s, color 0.2s, transform 0.2s var(--spring);
+      display: flex; flex-direction: column; gap: 2px;
     }
+    .ls-svc:hover { border-color: rgba(194,104,142,0.5); background: rgba(194,104,142,0.1); color: #fce8f0; transform: translateY(-1px); }
+    .ls-svc.selected { border-color: var(--rose); background: rgba(194,104,142,0.2); color: #fce8f0; }
+    .ls-svc-name { font-weight: 500; }
+    .ls-svc-hint { font-size: 10px; color: rgba(252,232,240,0.4); }
+
+    /* Step 3 — date */
+    .ls-date-input {
+      width: 100%; padding: 13px 16px;
+      background: rgba(255,255,255,0.07); border: 1.5px solid rgba(194,104,142,0.3);
+      border-radius: 12px;
+      font-family: 'DM Sans', sans-serif; font-size: 14px; color: #fce8f0;
+      outline: none; transition: border-color 0.2s;
+      color-scheme: dark;
+    }
+    .ls-date-input:focus { border-color: var(--rose); }
+
+    .ls-preview {
+      margin-top: 14px; padding: 12px 14px;
+      background: rgba(255,255,255,0.05); border-radius: 10px;
+      font-family: 'DM Sans', sans-serif; font-size: 12px;
+      color: rgba(252,232,240,0.55); line-height: 1.5;
+      min-height: 44px;
+    }
+    .ls-preview strong { color: rgba(252,232,240,0.85); font-weight: 500; }
+
+    /* Buttons */
+    .ls-btn-row { display: flex; gap: 10px; margin-top: 20px; }
+    .ls-back {
+      padding: 12px 18px; background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(194,104,142,0.2); border-radius: 10px;
+      font-family: 'DM Sans', sans-serif; font-size: 12px; color: rgba(252,232,240,0.6);
+      cursor: pointer; transition: background 0.2s, color 0.2s;
+    }
+    .ls-back:hover { background: rgba(255,255,255,0.12); color: #fce8f0; }
+    .ls-next {
+      flex: 1; padding: 12px 20px; border-radius: 10px; border: none;
+      background: var(--rose); color: #fff;
+      font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+      letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer;
+      box-shadow: 0 4px 20px rgba(194,104,142,0.4);
+      transition: opacity 0.2s, transform 0.2s var(--spring);
+    }
+    .ls-next:hover { opacity: 0.88; transform: translateY(-1px); }
+    .ls-next:disabled { opacity: 0.35; cursor: default; transform: none; }
+
     .ls-skip {
+      display: block; text-align: center; margin-top: 14px;
       background: none; border: none; cursor: pointer;
       font-family: 'DM Sans', sans-serif; font-size: 11px;
-      color: var(--muted); text-align: center; display: block;
-      margin-top: 10px; letter-spacing: 0.04em;
+      color: rgba(252,232,240,0.28); letter-spacing: 0.05em;
       transition: color 0.2s;
     }
-    .ls-skip:hover { color: var(--rose); }
+    .ls-skip:hover { color: rgba(252,232,240,0.55); }
   </style>
 </head>
 <body>
@@ -1050,34 +1136,62 @@
 
   <!-- ══ SETUP PROMPT ══ -->
   <div id="lashSetup" role="dialog" aria-modal="true" aria-label="Personalise your experience">
-    <button class="ls-close" id="lsClose" aria-label="Dismiss">×</button>
-    <p class="ls-title">Personalise your experience 💕</p>
-    <p class="ls-sub">We'll remind you when your lashes are due — no account needed, stays in your browser.</p>
-    <form class="ls-form" id="lsForm">
-      <input type="text"  class="ls-input" id="lsName"    placeholder="Your first name" required maxlength="30">
-      <select class="ls-input" id="lsService">
-        <option value="">Your last service…</option>
-        <option value="Korean Lash Lift"   data-weeks="7">Korean Lash Lift</option>
-        <option value="LVL Lashes"         data-weeks="7">LVL Lashes</option>
-        <option value="Lift + Tint Combo"  data-weeks="7">Lift + Tint Combo</option>
-        <option value="Classic Extensions" data-weeks="3">Classic Extensions</option>
-        <option value="Hybrid Extensions"  data-weeks="3">Hybrid Extensions</option>
-        <option value="Russian Volume"     data-weeks="2">Russian Volume</option>
-        <option value="Mega Volume"        data-weeks="2">Mega Volume</option>
-        <option value="Infills"            data-weeks="3">Infills</option>
-      </select>
-      <div class="ls-row">
-        <div>
-          <label style="font-size:11px;color:var(--muted);letter-spacing:.08em;display:block;margin-bottom:5px;">DATE OF LAST VISIT</label>
-          <input type="date" class="ls-input" id="lsDate" required>
+    <div class="ls-glow" aria-hidden="true"></div>
+    <div class="ls-inner">
+
+      <!-- Top row: progress + close -->
+      <div class="ls-toprow">
+        <div class="ls-dots">
+          <div class="ls-dot active" id="lsd0"></div>
+          <div class="ls-dot" id="lsd1"></div>
+          <div class="ls-dot" id="lsd2"></div>
         </div>
-        <div>
-          <label style="font-size:11px;color:var(--muted);letter-spacing:.08em;display:block;margin-bottom:5px;">NEXT VISIT (optional)</label>
-          <input type="date" class="ls-input" id="lsNext">
+        <button class="ls-close" id="lsClose" aria-label="Dismiss">×</button>
+      </div>
+
+      <!-- Step 1: Name -->
+      <div class="ls-step active" id="lss1">
+        <p class="ls-eyebrow">✦ Quick setup</p>
+        <p class="ls-q">What's your name?</p>
+        <input type="text" class="ls-name-input" id="lsName" placeholder="Your first name…" maxlength="30" autocomplete="given-name">
+        <div class="ls-btn-row">
+          <button class="ls-next" id="lsNext1" onclick="lsGo(2)" disabled>Continue →</button>
         </div>
       </div>
-      <button type="submit" class="btn btn-rose ls-save">Save my profile</button>
-    </form>
+
+      <!-- Step 2: Service -->
+      <div class="ls-step" id="lss2">
+        <p class="ls-eyebrow">✦ Step 2 of 3</p>
+        <p class="ls-q">What was your last treatment?</p>
+        <div class="ls-services" id="lsServices">
+          <button class="ls-svc" data-service="Korean Lash Lift"   data-weeks="7"  onclick="lsSelectSvc(this)"><span class="ls-svc-name">Korean Lash Lift</span><span class="ls-svc-hint">Refreshes every 7 wks</span></button>
+          <button class="ls-svc" data-service="LVL Lashes"         data-weeks="7"  onclick="lsSelectSvc(this)"><span class="ls-svc-name">LVL Lashes</span><span class="ls-svc-hint">Refreshes every 7 wks</span></button>
+          <button class="ls-svc" data-service="Lift + Tint Combo"  data-weeks="7"  onclick="lsSelectSvc(this)"><span class="ls-svc-name">Lift + Tint Combo</span><span class="ls-svc-hint">Refreshes every 7 wks</span></button>
+          <button class="ls-svc" data-service="Classic Extensions" data-weeks="3"  onclick="lsSelectSvc(this)"><span class="ls-svc-name">Classic Extensions</span><span class="ls-svc-hint">Infills every 3 wks</span></button>
+          <button class="ls-svc" data-service="Hybrid Extensions"  data-weeks="3"  onclick="lsSelectSvc(this)"><span class="ls-svc-name">Hybrid Extensions</span><span class="ls-svc-hint">Infills every 3 wks</span></button>
+          <button class="ls-svc" data-service="Russian Volume"     data-weeks="2"  onclick="lsSelectSvc(this)"><span class="ls-svc-name">Russian Volume</span><span class="ls-svc-hint">Infills every 2 wks</span></button>
+          <button class="ls-svc" data-service="Mega Volume"        data-weeks="2"  onclick="lsSelectSvc(this)"><span class="ls-svc-name">Mega Volume</span><span class="ls-svc-hint">Infills every 2 wks</span></button>
+          <button class="ls-svc" data-service="Infills"            data-weeks="3"  onclick="lsSelectSvc(this)"><span class="ls-svc-name">Infills</span><span class="ls-svc-hint">Next set in ~3 wks</span></button>
+        </div>
+        <div class="ls-btn-row">
+          <button class="ls-back" onclick="lsGo(1)">← Back</button>
+          <button class="ls-next" id="lsNext2" onclick="lsGo(3)" disabled>Continue →</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Date + save -->
+      <div class="ls-step" id="lss3">
+        <p class="ls-eyebrow">✦ Last step</p>
+        <p class="ls-q">When was your last visit?</p>
+        <input type="date" class="ls-date-input" id="lsDate" onchange="lsUpdatePreview()">
+        <div class="ls-preview" id="lsPreview">Pick a date and we'll show your personal reminder.</div>
+        <div class="ls-btn-row">
+          <button class="ls-back" onclick="lsGo(2)">← Back</button>
+          <button class="ls-next" id="lsNext3" onclick="lsSave()" disabled>Save my tracker ✓</button>
+        </div>
+      </div>
+
+    </div>
     <button class="ls-skip" id="lsSkip">Not now — maybe later</button>
   </div>
 
@@ -1885,42 +1999,108 @@
         if (window._updateNavTop) window._updateNavTop();
       }
 
-      function showSetup() {
-        // Set max date to today
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('lsDate').max = today;
-        document.getElementById('lsNext').min = today;
+      // ── Multi-step state ──
+      let _lsStep = 1;
+      let _lsSvc = null, _lsWeeks = 0;
+
+      function lsGo(step) {
+        document.getElementById('lss'+_lsStep).classList.remove('active');
+        _lsStep = step;
+        document.getElementById('lss'+step).classList.add('active');
+        [0,1,2].forEach(i => {
+          const d = document.getElementById('lsd'+i);
+          d.classList.toggle('active', i === step-1);
+          d.classList.toggle('done',   i <  step-1);
+        });
+      }
+
+      function lsSelectSvc(btn) {
+        document.querySelectorAll('.ls-svc').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        _lsSvc   = btn.dataset.service;
+        _lsWeeks = parseInt(btn.dataset.weeks);
+        document.getElementById('lsNext2').disabled = false;
+      }
+
+      function lsUpdatePreview() {
+        const dateVal = document.getElementById('lsDate').value;
+        const btn     = document.getElementById('lsNext3');
+        if (!dateVal) { btn.disabled = true; return; }
+        btn.disabled = false;
+
+        const name = document.getElementById('lsName').value.trim() || 'You';
+        const due  = new Date(dateVal);
+        due.setDate(due.getDate() + _lsWeeks * 7);
+        const days = Math.round((due - new Date()) / 86400000);
+        const dueStr = due.toLocaleDateString('en-GB', { day:'numeric', month:'long' });
+
+        let msg;
+        if (days < 0)      msg = `<strong>${name}</strong>, your ${_lsSvc} is <strong>overdue</strong> — book Louise now!`;
+        else if (days === 0) msg = `<strong>${name}</strong>, your ${_lsSvc} is <strong>due today!</strong>`;
+        else if (days <= 7)  msg = `<strong>${name}</strong>, your ${_lsSvc} is due in <strong>${days} day${days===1?'':'s'}</strong> — on ${dueStr}.`;
+        else                 msg = `<strong>${name}</strong>, your ${_lsSvc} is due on <strong>${dueStr}</strong> — ${days} days away.`;
+
+        document.getElementById('lsPreview').innerHTML = '👁 ' + msg;
+      }
+
+      window.lsGo         = lsGo;
+      window.lsSelectSvc  = lsSelectSvc;
+      window.lsUpdatePreview = lsUpdatePreview;
+
+      window.lsSave = function() {
+        const name     = document.getElementById('lsName').value.trim();
+        const lastDate = document.getElementById('lsDate').value;
+        if (!name || !_lsSvc || !lastDate) return;
+        const p = { name, service: _lsSvc, weeks: _lsWeeks, lastDate, nextDate: null };
+        saveProfile(p);
+        hideSetup();
+        renderBar(p);
+      };
+
+      function showSetup(prefill) {
+        // Reset to step 1
+        _lsStep = 1; _lsSvc = null; _lsWeeks = 0;
+        [1,2,3].forEach(i => document.getElementById('lss'+i).classList.toggle('active', i===1));
+        [0,1,2].forEach(i => {
+          document.getElementById('lsd'+i).classList.toggle('active', i===0);
+          document.getElementById('lsd'+i).classList.remove('done');
+        });
+        document.getElementById('lsNext1').disabled = true;
+        document.getElementById('lsNext2').disabled = true;
+        document.getElementById('lsNext3').disabled = true;
+        document.querySelectorAll('.ls-svc').forEach(b => b.classList.remove('selected'));
+        document.getElementById('lsDate').max = new Date().toISOString().split('T')[0];
+        document.getElementById('lsPreview').innerHTML = 'Pick a date and we\'ll show your personal reminder.';
+
+        if (prefill) {
+          document.getElementById('lsName').value = prefill.name || '';
+          if (prefill.name) document.getElementById('lsNext1').disabled = false;
+          if (prefill.service) {
+            const btn = document.querySelector(`.ls-svc[data-service="${prefill.service}"]`);
+            if (btn) { lsSelectSvc(btn); }
+          }
+          document.getElementById('lsDate').value = prefill.lastDate || '';
+          if (prefill.lastDate) { lsUpdatePreview(); }
+        } else {
+          document.getElementById('lsName').value = '';
+          document.getElementById('lsDate').value = '';
+        }
         setup.classList.add('show');
       }
 
       function hideSetup() { setup.classList.remove('show'); }
 
-      // Save form
-      document.getElementById('lsForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const name    = document.getElementById('lsName').value.trim();
-        const sel     = document.getElementById('lsService');
-        const service = sel.value;
-        const weeks   = parseInt(sel.selectedOptions[0]?.dataset.weeks || '0');
-        const lastDate = document.getElementById('lsDate').value;
-        const nextDate = document.getElementById('lsNext').value || null;
-        if (!name || !service || !lastDate) return;
-        const p = { name, service, weeks, lastDate, nextDate };
-        saveProfile(p);
-        hideSetup();
-        renderBar(p);
+      // Name input enables continue
+      document.getElementById('lsName').addEventListener('input', function() {
+        document.getElementById('lsNext1').disabled = this.value.trim().length < 2;
+      });
+      document.getElementById('lsName').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && this.value.trim().length >= 2) lsGo(2);
       });
 
       // Edit button → reopen setup pre-filled
       document.getElementById('lbEdit').addEventListener('click', function() {
-        const p = getProfile();
-        if (p) {
-          document.getElementById('lsName').value    = p.name;
-          document.getElementById('lsService').value = p.service;
-          document.getElementById('lsDate').value    = p.lastDate || '';
-          document.getElementById('lsNext').value    = p.nextDate || '';
-        }
-        showSetup();
+        showSetup(getProfile());
       });
 
       // Close / skip
@@ -1935,8 +2115,7 @@
       if (profile) {
         renderBar(profile);
       } else if (!localStorage.getItem('dbl_setup_dismissed')) {
-        // Show prompt after 4s on first visit
-        setTimeout(showSetup, 4000);
+        setTimeout(() => showSetup(null), 4000);
       }
     })();
 

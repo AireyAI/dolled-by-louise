@@ -330,6 +330,119 @@
     /* ── Hidden product (filtered out) ── */
     .prod-card.hidden { display: none; }
 
+    /* ── Checkout Modal ── */
+    #checkout-modal {
+      display: none;
+      position: fixed; inset: 0; z-index: 500;
+      align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    #checkout-modal.open { display: flex; }
+
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(45,20,35,0.55);
+      backdrop-filter: blur(8px);
+      animation: fadeIn 0.25s var(--ease);
+    }
+    .modal-box {
+      position: relative; z-index: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px 28px 28px;
+      width: 100%; max-width: 420px;
+      box-shadow:
+        0 4px 8px rgba(194,104,142,0.06),
+        0 24px 64px rgba(45,20,35,0.28);
+      animation: modalUp 0.35s var(--spring);
+    }
+    @keyframes modalUp { from { opacity:0; transform:translateY(32px) scale(0.97); } to { opacity:1; transform:none; } }
+
+    .modal-close {
+      position: absolute; top: 16px; right: 16px;
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--base);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: var(--muted); font-size: 16px; line-height: 1;
+      transition: background 0.2s, color 0.2s;
+    }
+    .modal-close:hover { background: var(--blush); color: var(--rose); }
+
+    .modal-img {
+      width: 72px; height: 72px; border-radius: 12px;
+      object-fit: cover; border: 1px solid var(--border);
+      margin-bottom: 14px;
+    }
+    .modal-cat {
+      font-size: 10px; font-weight: 500; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--rose); margin-bottom: 5px;
+    }
+    .modal-name {
+      font-family: 'Playfair Display', serif; font-weight: 700;
+      font-size: 22px; color: var(--text); margin-bottom: 4px;
+    }
+    .modal-price {
+      font-family: 'Playfair Display', serif; font-weight: 700;
+      font-size: 28px; color: var(--text); margin-bottom: 20px;
+    }
+    .modal-price span {
+      font-family: 'DM Sans', sans-serif; font-size: 14px;
+      font-weight: 300; color: var(--muted);
+    }
+
+    .modal-divider {
+      height: 1px; background: var(--border); margin: 0 0 20px;
+    }
+    .modal-pay-lbl {
+      font-size: 10px; font-weight: 500; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 14px;
+    }
+
+    .modal-pay-options { display: flex; flex-direction: column; gap: 10px; }
+
+    /* Stripe button */
+    .pay-stripe {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      padding: 14px 20px; border-radius: 8px;
+      background: #635bff; color: #fff;
+      border: none; cursor: pointer; text-decoration: none;
+      font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+      letter-spacing: 0.04em;
+      transition: transform 0.25s var(--spring), box-shadow 0.25s var(--ease), background 0.2s;
+      box-shadow: 0 4px 16px rgba(99,91,255,0.3);
+    }
+    .pay-stripe:hover { background: #4f46e5; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(99,91,255,0.4); }
+    .pay-stripe:active { transform: translateY(0); }
+
+    /* PayPal button */
+    .pay-paypal {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      padding: 14px 20px; border-radius: 8px;
+      background: #ffc439; color: #003087;
+      border: none; cursor: pointer; text-decoration: none;
+      font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700;
+      letter-spacing: 0.02em;
+      transition: transform 0.25s var(--spring), box-shadow 0.25s var(--ease), background 0.2s;
+      box-shadow: 0 4px 16px rgba(255,196,57,0.35);
+    }
+    .pay-paypal:hover { background: #f0b429; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,196,57,0.45); }
+    .pay-paypal:active { transform: translateY(0); }
+
+    /* WhatsApp fallback */
+    .pay-wa {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 11px 20px; border-radius: 8px;
+      background: transparent;
+      border: 1.5px solid rgba(194,104,142,0.25);
+      color: var(--muted); text-decoration: none;
+      font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 400;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+    .pay-wa:hover { border-color: var(--rose); color: var(--rose); background: var(--blush); }
+
     /* ── Banner strip ── */
     #shop-banner {
       background: var(--rose);
@@ -637,10 +750,7 @@
             <p class="prod-desc">Everything you need to care for your new lashes. Includes our foam cleanser, a spoolie set, and a mini lash serum — all in a branded pouch.</p>
             <div class="prod-footer">
               <p class="prod-price">£24<span>.99</span></p>
-              <a href="https://wa.me/447464557236?text=Hi%20Louise!%20I'd%20love%20to%20order%20the%20Lash%20Aftercare%20Starter%20Kit%20%F0%9F%92%95"
-                 target="_blank" rel="noopener" class="prod-enquire" aria-label="Order Lash Aftercare Starter Kit via WhatsApp">
-                Order ✦
-              </a>
+              <button class="prod-enquire" onclick="openCheckout('Lash Aftercare Starter Kit','Kits &amp; Bundles','£24.99','https://placehold.co/500x500/fce8f0/c97fa0?text=Aftercare+Kit','STRIPE_LINK_1','PAYPAL_LINK_1','Hi%20Louise!%20I%27d%20love%20to%20order%20the%20Lash%20Aftercare%20Starter%20Kit%20%F0%9F%92%95')">Buy Now ✦</button>
             </div>
           </div>
         </div>
@@ -657,10 +767,7 @@
             <p class="prod-desc">Gentle, oil-free foam formula that deep cleans your lash line without breaking down the adhesive bond. Use daily for lash longevity.</p>
             <div class="prod-footer">
               <p class="prod-price">£9<span>.99</span></p>
-              <a href="https://wa.me/447464557236?text=Hi%20Louise!%20I'd%20love%20to%20order%20the%20Lash%20Foam%20Cleanser%20%F0%9F%92%95"
-                 target="_blank" rel="noopener" class="prod-enquire" aria-label="Order Foam Cleanser via WhatsApp">
-                Order ✦
-              </a>
+              <button class="prod-enquire" onclick="openCheckout('Lash Extension Foam Cleanser','Aftercare','£9.99','https://placehold.co/500x500/fff0f6/c97fa0?text=Foam+Cleanser','STRIPE_LINK_2','PAYPAL_LINK_2','Hi%20Louise!%20I%27d%20love%20to%20order%20the%20Lash%20Foam%20Cleanser%20%F0%9F%92%95')">Buy Now ✦</button>
             </div>
           </div>
         </div>
@@ -677,10 +784,7 @@
             <p class="prod-desc">Nourishing serum packed with peptides and biotin to strengthen your natural lashes and promote healthy growth underneath your extensions.</p>
             <div class="prod-footer">
               <p class="prod-price">£14<span>.99</span></p>
-              <a href="https://wa.me/447464557236?text=Hi%20Louise!%20I'd%20love%20to%20order%20the%20Lash%20Conditioning%20Serum%20%F0%9F%92%95"
-                 target="_blank" rel="noopener" class="prod-enquire" aria-label="Order Lash Serum via WhatsApp">
-                Order ✦
-              </a>
+              <button class="prod-enquire" onclick="openCheckout('Lash Conditioning Serum','Aftercare','£14.99','https://placehold.co/500x500/fdf8f5/c97fa0?text=Lash+Serum','STRIPE_LINK_3','PAYPAL_LINK_3','Hi%20Louise!%20I%27d%20love%20to%20order%20the%20Lash%20Conditioning%20Serum%20%F0%9F%92%95')">Buy Now ✦</button>
             </div>
           </div>
         </div>
@@ -696,10 +800,7 @@
             <p class="prod-desc">A pack of 10 disposable and 2 reusable spoolie brushes. Perfect for daily grooming — brush through each morning to keep lashes neat and defined.</p>
             <div class="prod-footer">
               <p class="prod-price">£5<span>.99</span></p>
-              <a href="https://wa.me/447464557236?text=Hi%20Louise!%20I'd%20love%20to%20order%20the%20Spoolie%20Brush%20Set%20%F0%9F%92%95"
-                 target="_blank" rel="noopener" class="prod-enquire" aria-label="Order Spoolie Set via WhatsApp">
-                Order ✦
-              </a>
+              <button class="prod-enquire" onclick="openCheckout('Spoolie Brush Set','Accessories','£5.99','https://placehold.co/500x500/fce8f0/c97fa0?text=Spoolie+Set','STRIPE_LINK_4','PAYPAL_LINK_4','Hi%20Louise!%20I%27d%20love%20to%20order%20the%20Spoolie%20Brush%20Set%20%F0%9F%92%95')">Buy Now ✦</button>
             </div>
           </div>
         </div>
@@ -715,10 +816,7 @@
             <p class="prod-desc">Sleep on silk to dramatically reduce friction on your extensions. This 100% mulberry silk pillowcase extends fill life and keeps lashes intact overnight.</p>
             <div class="prod-footer">
               <p class="prod-price">£19<span>.99</span></p>
-              <a href="https://wa.me/447464557236?text=Hi%20Louise!%20I'd%20love%20to%20order%20the%20Silk%20Lash%20Pillowcase%20%F0%9F%92%95"
-                 target="_blank" rel="noopener" class="prod-enquire" aria-label="Order Silk Pillowcase via WhatsApp">
-                Order ✦
-              </a>
+              <button class="prod-enquire" onclick="openCheckout('Silk Lash Pillowcase','Accessories','£19.99','https://placehold.co/500x500/fff0f6/c97fa0?text=Lash+Pillow','STRIPE_LINK_5','PAYPAL_LINK_5','Hi%20Louise!%20I%27d%20love%20to%20order%20the%20Silk%20Lash%20Pillowcase%20%F0%9F%92%95')">Buy Now ✦</button>
             </div>
           </div>
         </div>
@@ -735,10 +833,7 @@
             <p class="prod-desc">The full works — foam cleanser, conditioning serum, spoolie set, silk pillowcase, and a handwritten aftercare card from Louise. Perfect as a gift.</p>
             <div class="prod-footer">
               <p class="prod-price">£44<span>.99</span></p>
-              <a href="https://wa.me/447464557236?text=Hi%20Louise!%20I'd%20love%20to%20order%20the%20Luxury%20Lash%20Bundle%20%F0%9F%92%95"
-                 target="_blank" rel="noopener" class="prod-enquire" aria-label="Order Luxury Bundle via WhatsApp">
-                Order ✦
-              </a>
+              <button class="prod-enquire" onclick="openCheckout('The Luxury Lash Bundle','Kits &amp; Bundles','£44.99','https://placehold.co/500x500/fce8f0/c97fa0?text=Luxury+Bundle','STRIPE_LINK_6','PAYPAL_LINK_6','Hi%20Louise!%20I%27d%20love%20to%20order%20the%20Luxury%20Lash%20Bundle%20%F0%9F%92%95')">Buy Now ✦</button>
             </div>
           </div>
         </div>
@@ -754,15 +849,12 @@
             <p class="prod-desc">Safe, professional-grade remover gel for at-home use between visits. Dissolves adhesive gently without damaging your natural lashes.</p>
             <div class="prod-footer">
               <p class="prod-price">£11<span>.99</span></p>
-              <a href="https://wa.me/447464557236?text=Hi%20Louise!%20I'd%20love%20to%20order%20the%20Gentle%20Lash%20Remover%20%F0%9F%92%95"
-                 target="_blank" rel="noopener" class="prod-enquire" aria-label="Order Lash Remover via WhatsApp">
-                Order ✦
-              </a>
+              <button class="prod-enquire" onclick="openCheckout('Gentle Lash Remover','Aftercare','£11.99','https://placehold.co/500x500/fdf8f5/c97fa0?text=Lash+Remover','STRIPE_LINK_7','PAYPAL_LINK_7','Hi%20Louise!%20I%27d%20love%20to%20order%20the%20Gentle%20Lash%20Remover%20%F0%9F%92%95')">Buy Now ✦</button>
             </div>
           </div>
         </div>
 
-        <!-- Gift Card placeholder — full card in gift section below, just a card here -->
+        <!-- Gift Card -->
         <div class="prod-card reveal" data-cat="gift" style="transition-delay:.4s">
           <div class="prod-img-wrap">
             <img src="https://placehold.co/500x500/fce8f0/c97fa0?text=Gift+Card" alt="Dolled by Louise Gift Card" loading="lazy">
@@ -774,16 +866,41 @@
             <p class="prod-desc">Give the gift of gorgeous lashes. Choose any amount and Louise will send a beautifully presented digital or physical gift card — perfect for any occasion.</p>
             <div class="prod-footer">
               <p class="prod-price">From<span> £25</span></p>
-              <a href="https://wa.me/447464557236?text=Hi%20Louise!%20I'd%20love%20to%20order%20a%20Gift%20Card%20%F0%9F%92%95"
-                 target="_blank" rel="noopener" class="prod-enquire" aria-label="Order Gift Card via WhatsApp">
-                Order ✦
-              </a>
+              <button class="prod-enquire" onclick="openCheckout('Experience Gift Card','Gift Cards','From £25','https://placehold.co/500x500/fce8f0/c97fa0?text=Gift+Card','STRIPE_LINK_8','PAYPAL_LINK_8','Hi%20Louise!%20I%27d%20love%20to%20order%20a%20Gift%20Card%20%F0%9F%92%95')">Buy Now ✦</button>
             </div>
           </div>
         </div>
 
       </div>
     </section>
+
+    <!-- ── CHECKOUT MODAL ── -->
+    <div id="checkout-modal" role="dialog" aria-modal="true" aria-labelledby="modal-product-name">
+      <div class="modal-backdrop" onclick="closeCheckout()"></div>
+      <div class="modal-box">
+        <button class="modal-close" onclick="closeCheckout()" aria-label="Close">✕</button>
+        <img id="modal-img" class="modal-img" src="" alt="">
+        <p class="modal-cat" id="modal-cat"></p>
+        <p class="modal-name" id="modal-product-name"></p>
+        <p class="modal-price" id="modal-price"></p>
+        <div class="modal-divider"></div>
+        <p class="modal-pay-lbl">Choose how to pay</p>
+        <div class="modal-pay-options">
+          <a id="modal-stripe" href="#" target="_blank" rel="noopener" class="pay-stripe">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.591-7.305z"/></svg>
+            Pay with Stripe
+          </a>
+          <a id="modal-paypal" href="#" target="_blank" rel="noopener" class="pay-paypal">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#003087" aria-hidden="true"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.59 3.025-2.613 4.575-6.069 4.575h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.105-.314 2.001a.641.641 0 0 0 .633.74h4.317a.641.641 0 0 0 .633-.54l.026-.163.534-3.377.034-.186a.641.641 0 0 1 .633-.54h.399c2.578 0 4.597-.543 5.79-2.108.937-1.24 1.133-2.726.392-4.12z"/></svg>
+            Pay with PayPal
+          </a>
+          <a id="modal-wa" href="#" target="_blank" rel="noopener" class="pay-wa">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+            Or order via WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
 
     <!-- ── GIFT CARD SECTION ── -->
     <section id="gift-section">
@@ -929,6 +1046,51 @@
       btn.classList.add('active');
       document.getElementById('giftDisplayAmount').textContent = amount;
     }
+
+    // ── Checkout modal ──
+    // IMPORTANT: Replace STRIPE_LINK_N with real Stripe Payment Links
+    // and PAYPAL_LINK_N with real PayPal.me or PayPal button links
+    const STRIPE_LINKS = {
+      STRIPE_LINK_1: 'https://buy.stripe.com/REPLACE_WITH_REAL_LINK',
+      STRIPE_LINK_2: 'https://buy.stripe.com/REPLACE_WITH_REAL_LINK',
+      STRIPE_LINK_3: 'https://buy.stripe.com/REPLACE_WITH_REAL_LINK',
+      STRIPE_LINK_4: 'https://buy.stripe.com/REPLACE_WITH_REAL_LINK',
+      STRIPE_LINK_5: 'https://buy.stripe.com/REPLACE_WITH_REAL_LINK',
+      STRIPE_LINK_6: 'https://buy.stripe.com/REPLACE_WITH_REAL_LINK',
+      STRIPE_LINK_7: 'https://buy.stripe.com/REPLACE_WITH_REAL_LINK',
+      STRIPE_LINK_8: 'https://buy.stripe.com/REPLACE_WITH_REAL_LINK',
+    };
+    const PAYPAL_LINKS = {
+      PAYPAL_LINK_1: 'https://paypal.me/REPLACE_WITH_USERNAME/24.99',
+      PAYPAL_LINK_2: 'https://paypal.me/REPLACE_WITH_USERNAME/9.99',
+      PAYPAL_LINK_3: 'https://paypal.me/REPLACE_WITH_USERNAME/14.99',
+      PAYPAL_LINK_4: 'https://paypal.me/REPLACE_WITH_USERNAME/5.99',
+      PAYPAL_LINK_5: 'https://paypal.me/REPLACE_WITH_USERNAME/19.99',
+      PAYPAL_LINK_6: 'https://paypal.me/REPLACE_WITH_USERNAME/44.99',
+      PAYPAL_LINK_7: 'https://paypal.me/REPLACE_WITH_USERNAME/11.99',
+      PAYPAL_LINK_8: 'https://paypal.me/REPLACE_WITH_USERNAME/25',
+    };
+
+    function openCheckout(name, cat, price, img, stripeKey, paypalKey, waText) {
+      document.getElementById('modal-product-name').textContent = name;
+      document.getElementById('modal-cat').textContent = cat;
+      document.getElementById('modal-price').textContent = price;
+      document.getElementById('modal-img').src = img;
+      document.getElementById('modal-img').alt = name;
+      document.getElementById('modal-stripe').href = STRIPE_LINKS[stripeKey] || '#';
+      document.getElementById('modal-paypal').href = PAYPAL_LINKS[paypalKey] || '#';
+      document.getElementById('modal-wa').href = `https://wa.me/447464557236?text=${waText}`;
+      document.getElementById('checkout-modal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeCheckout() {
+      document.getElementById('checkout-modal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // Close on Escape
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCheckout(); });
   </script>
 </body>
 </html>

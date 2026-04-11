@@ -731,6 +731,119 @@
     .faq-item[open] .faq-q::after { transform: rotate(45deg); }
     .faq-a { padding: 0 24px 20px; font-size: 14px; font-weight: 300; color: var(--muted); line-height: 1.8; }
 
+    /* ── Lash Club ── */
+    #lash-club {
+      background: var(--plum);
+      padding: 100px 40px;
+      position: relative; overflow: hidden;
+    }
+    #lash-club::before {
+      content: '';
+      position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 60% 70% at 10% 20%, rgba(194,104,142,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 60% at 90% 80%, rgba(201,127,160,0.14) 0%, transparent 55%);
+    }
+    .club-inner { max-width: 960px; margin: 0 auto; position: relative; z-index: 1; }
+    .club-header { text-align: center; margin-bottom: 56px; }
+    .club-lbl {
+      font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500;
+      letter-spacing: 0.3em; text-transform: uppercase; color: var(--rose-light);
+      margin-bottom: 14px;
+    }
+    .club-h {
+      font-family: 'Playfair Display', serif; font-weight: 700; font-style: italic;
+      font-size: clamp(38px, 6vw, 68px); line-height: 0.95; letter-spacing: -0.02em;
+      color: #fce8f0;
+    }
+    .club-h em { font-style: normal; color: var(--rose-light); }
+    .club-sub {
+      margin-top: 18px;
+      font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
+      font-size: 18px; color: rgba(252,232,240,0.65); line-height: 1.55;
+    }
+    .club-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+    }
+    @media (max-width: 680px) { .club-grid { grid-template-columns: 1fr; } }
+    .club-card {
+      background: rgba(255,248,246,0.06);
+      border: 1px solid rgba(194,104,142,0.25);
+      border-radius: 20px;
+      padding: 36px 32px;
+      position: relative;
+      transition: transform 0.3s var(--spring), border-color 0.3s;
+    }
+    .club-card:hover { transform: translateY(-4px); border-color: rgba(194,104,142,0.5); }
+    .club-card.featured {
+      background: rgba(194,104,142,0.12);
+      border-color: rgba(194,104,142,0.45);
+    }
+    .club-card-badge {
+      position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+      background: var(--rose); color: #fff;
+      font-family: 'DM Sans', sans-serif; font-size: 9px; font-weight: 600;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      padding: 4px 14px; border-radius: 20px; white-space: nowrap;
+    }
+    .club-card-title {
+      font-family: 'Playfair Display', serif; font-weight: 700; font-style: italic;
+      font-size: 26px; color: #fce8f0; margin-bottom: 4px;
+    }
+    .club-card-tagline {
+      font-size: 12px; color: rgba(252,232,240,0.55); margin-bottom: 22px;
+      font-family: 'DM Sans', sans-serif; letter-spacing: 0.05em;
+    }
+    .club-price {
+      display: flex; align-items: baseline; gap: 4px; margin-bottom: 24px;
+    }
+    .club-price-amt {
+      font-family: 'Playfair Display', serif; font-weight: 700;
+      font-size: 48px; color: #fce8f0; line-height: 1;
+    }
+    .club-price-per {
+      font-family: 'DM Sans', sans-serif; font-size: 13px;
+      color: rgba(252,232,240,0.5); letter-spacing: 0.05em;
+    }
+    .club-perks {
+      list-style: none; display: flex; flex-direction: column; gap: 10px;
+      margin-bottom: 28px;
+    }
+    .club-perk {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-family: 'DM Sans', sans-serif; font-size: 13px;
+      color: rgba(252,232,240,0.8); line-height: 1.4;
+    }
+    .club-perk::before {
+      content: '✦'; color: var(--rose-light); font-size: 10px;
+      flex-shrink: 0; margin-top: 2px;
+    }
+    .club-spots {
+      font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500;
+      letter-spacing: 0.1em; color: rgba(252,232,240,0.45);
+      margin-bottom: 16px; text-transform: uppercase;
+    }
+    .club-spots span { color: var(--rose-light); font-weight: 600; }
+    .btn-club {
+      background: rgba(194,104,142,0.2);
+      color: #fce8f0; border: 1.5px solid rgba(194,104,142,0.4);
+      width: 100%; justify-content: center;
+      transition: background 0.25s, border-color 0.25s, transform 0.25s var(--spring);
+    }
+    .btn-club:hover { background: rgba(194,104,142,0.35); border-color: rgba(194,104,142,0.7); transform: translateY(-2px); }
+    .btn-club-rose {
+      background: var(--rose); color: #fff; border: none;
+      width: 100%; justify-content: center;
+      box-shadow: 0 4px 24px rgba(194,104,142,0.4);
+      transition: box-shadow 0.25s, transform 0.25s var(--spring);
+    }
+    .btn-club-rose:hover { box-shadow: 0 8px 36px rgba(194,104,142,0.6); transform: translateY(-2px); }
+    .club-note {
+      text-align: center; margin-top: 36px;
+      font-family: 'DM Sans', sans-serif; font-size: 12px;
+      color: rgba(252,232,240,0.35); line-height: 1.6;
+    }
+
     /* ── CTA banner ── */
     #cta-banner { padding: 80px 40px; background: linear-gradient(135deg, var(--floating) 0%, var(--blush) 100%); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
     .cta-inner { max-width: 600px; margin: 0 auto; text-align: center; }
@@ -852,6 +965,7 @@
     <div class="nav-links">
       <a href="#services"     class="nav-link">Services</a>
       <a href="#pricing"      class="nav-link">Pricing</a>
+      <a href="#lash-club"    class="nav-link" style="color:var(--rose);font-weight:500;">✦ Club</a>
       <a href="#gallery"      class="nav-link">Gallery</a>
       <a href="#about"        class="nav-link">About</a>
       <a href="#faq"          class="nav-link">FAQ</a>
@@ -1350,6 +1464,65 @@
           </details>
 
         </div>
+      </div>
+    </section>
+
+    <!-- ── LASH CLUB ── -->
+    <section id="lash-club" aria-label="The Lash Club membership">
+      <div class="club-inner">
+        <div class="club-header reveal">
+          <p class="club-lbl">✦ Members only</p>
+          <h2 class="club-h">The Lash <em>Club</em></h2>
+          <p class="club-sub">Pay monthly, always look incredible. Priority booking, guaranteed slots, and savings on every visit.</p>
+        </div>
+        <div class="club-grid">
+
+          <!-- Lash Lift Club -->
+          <div class="club-card reveal" style="transition-delay:.1s">
+            <p class="club-card-title">Lash Lift Club</p>
+            <p class="club-card-tagline">Low maintenance. Always glowing.</p>
+            <div class="club-price">
+              <span class="club-price-amt">£22</span>
+              <span class="club-price-per">/ month</span>
+            </div>
+            <ul class="club-perks">
+              <li class="club-perk">One lash lift every 6–8 weeks, covered</li>
+              <li class="club-perk">Free lash tint upgrade every visit</li>
+              <li class="club-perk">Priority booking — your slot before anyone else</li>
+              <li class="club-perk">Member WhatsApp line for fast responses</li>
+              <li class="club-perk">Cancel anytime, no contracts</li>
+            </ul>
+            <p class="club-spots">Only <span>10 spots</span> available</p>
+            <a href="https://wa.me/447464557236?text=Hi%20Louise!%20I%27d%20love%20to%20join%20the%20Lash%20Lift%20Club%20%F0%9F%92%95" target="_blank" rel="noopener" class="btn btn-club">
+              Join the Lift Club
+            </a>
+          </div>
+
+          <!-- Infill Club -->
+          <div class="club-card featured reveal" style="transition-delay:.2s">
+            <div class="club-card-badge">Most Popular</div>
+            <p class="club-card-title">Infill Club</p>
+            <p class="club-card-tagline">Extensions, always topped up.</p>
+            <div class="club-price">
+              <span class="club-price-amt">£45</span>
+              <span class="club-price-per">/ month</span>
+            </div>
+            <ul class="club-perks">
+              <li class="club-perk">Unlimited infill appointments every month</li>
+              <li class="club-perk">Never go without — always full and fresh</li>
+              <li class="club-perk">Priority booking, guaranteed recurring slot</li>
+              <li class="club-perk">Member WhatsApp line for fast responses</li>
+              <li class="club-perk">10% off any full set bookings</li>
+              <li class="club-perk">Cancel anytime, no contracts</li>
+            </ul>
+            <p class="club-spots">Only <span>10 spots</span> available</p>
+            <a href="https://wa.me/447464557236?text=Hi%20Louise!%20I%27d%20love%20to%20join%20the%20Infill%20Club%20%F0%9F%92%95" target="_blank" rel="noopener" class="btn btn-club-rose btn">
+              Join the Infill Club
+            </a>
+          </div>
+
+        </div>
+        <p class="club-note">Membership is billed monthly via direct debit. Spots are limited to keep quality high.<br>WhatsApp Louise to secure your place — she'll get you set up.</p>
       </div>
     </section>
 

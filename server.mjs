@@ -213,7 +213,7 @@ http.createServer((req, res) => {
   }
 
   // Static file serving
-  let urlPath = url === '/' ? '/index.html' : url;
+  let urlPath = url === '/' ? '/welcome.html' : url;
   urlPath = decodeURIComponent(urlPath);
   const filePath = path.join(__dirname, urlPath);
   const ext      = path.extname(filePath).toLowerCase();

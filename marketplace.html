@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop — Dolled by Louise</title>
+  <meta name="description" content="Lash aftercare products, kits, and accessories from Dolled by Louise. Keep your lashes looking flawless between appointments.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── Tokens ── */
+    :root {
+      --base:        #fdf8f5;
+      --surface:     #fff8f6;
+      --elevated:    #fef2f6;
+      --floating:    #fce8f0;
+      --rose:        #c2688e;
+      --rose-dim:    rgba(194,104,142,0.12);
+      --rose-light:  #f0c5d8;
+      --blush:       #fce8f0;
+      --plum:        #2d1423;
+      --gold:        #c9956a;
+      --text:        #2d1423;
+      --muted:       #8a6272;
+      --border:      rgba(194,104,142,0.16);
+      --wa:          #25D366;
+      --spring:      cubic-bezier(0.34,1.3,0.64,1);
+      --ease:        cubic-bezier(0.4,0,0.2,1);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--base);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── Grain ── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0; z-index: 9999; pointer-events: none;
+      opacity: 0.018;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+    :focus-visible { outline: 2px solid var(--rose); outline-offset: 3px; }
+
+    /* ── Keyframes ── */
+    @keyframes fadeUp  { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeIn  { from { opacity:0; } to { opacity:1; } }
+    @keyframes floatA  { 0%,100% { transform:translateY(0) rotate(0deg); } 50% { transform:translateY(-14px) rotate(3deg); } }
+    @keyframes floatB  { 0%,100% { transform:translateY(0); } 50% { transform:translateY(10px); } }
+    @keyframes waPulse { 0%,100% { box-shadow:0 4px 24px rgba(37,211,102,0.4); } 50% { box-shadow:0 4px 48px rgba(37,211,102,0.7),0 0 0 12px rgba(37,211,102,0.08); } }
+
+    /* ── Reveal ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+    }
+    .reveal.vis { opacity: 1; transform: none; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 28px; border-radius: 3px; border: none; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+      letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none;
+      transition: transform 0.25s var(--spring), box-shadow 0.25s var(--ease), background 0.2s;
+    }
+    .btn:hover  { transform: translateY(-2px); }
+    .btn:active { transform: translateY(0); }
+    .btn-rose {
+      background: var(--rose); color: var(--base);
+      box-shadow: 0 4px 20px rgba(201,127,160,0.35);
+    }
+    .btn-rose:hover { box-shadow: 0 8px 32px rgba(201,127,160,0.5); }
+    .btn-outline {
+      background: transparent; color: var(--text);
+      border: 1.5px solid rgba(194,104,142,0.35);
+    }
+    .btn-outline:hover { border-color: var(--rose); color: var(--rose); background: var(--blush); }
+    .btn-wa {
+      background: var(--wa); color: #fff;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.3);
+    }
+    .btn-wa:hover { box-shadow: 0 8px 28px rgba(37,211,102,0.45); }
+
+    /* ── Section typography ── */
+    .lbl {
+      font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500;
+      letter-spacing: 0.26em; text-transform: uppercase; color: var(--rose);
+      margin-bottom: 14px;
+    }
+    .h2 {
+      font-family: 'Playfair Display', serif; font-weight: 700;
+      font-size: clamp(34px, 5.5vw, 54px); color: var(--text);
+      line-height: 1.1; letter-spacing: -0.02em;
+    }
+    .h2 em { font-style: italic; color: var(--rose); }
+
+    /* ── Nav ── */
+    #nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 12px 32px;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: background 0.4s var(--ease), border-color 0.4s, backdrop-filter 0.4s, box-shadow 0.4s;
+      border-bottom: 1px solid transparent;
+    }
+    #nav.scrolled {
+      background: rgba(253,248,245,0.92);
+      backdrop-filter: blur(16px);
+      border-color: var(--border);
+      box-shadow: 0 2px 20px rgba(194,104,142,0.08);
+    }
+    .nav-logo {
+      display: flex; align-items: center; text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-link {
+      font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 400;
+      color: var(--muted); text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-link:hover { color: var(--rose); }
+    .nav-link.active { color: var(--rose); font-weight: 500; }
+    @media (max-width: 680px) {
+      .nav-links { display: none; }
+      .nav-call-btn { display: none; }
+    }
+
+    /* ── Shop Hero ── */
+    #shop-hero {
+      position: relative;
+      padding: 140px 40px 80px;
+      overflow: hidden;
+    }
+    .shop-hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 80% 10%, rgba(240,197,216,0.5) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 60% at 5% 80%, rgba(252,232,240,0.55) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 40% at 95% 85%, rgba(194,104,142,0.08) 0%, transparent 50%),
+        var(--base);
+    }
+    .shop-hero-orb-a {
+      position: absolute; top: 6%; right: 5%; z-index: 1; pointer-events: none;
+      width: 360px; height: 360px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(240,197,216,0.4) 0%, transparent 70%);
+      animation: floatA 9s ease-in-out infinite;
+    }
+    .shop-hero-orb-b {
+      position: absolute; top: 40%; right: 22%; z-index: 1; pointer-events: none;
+      width: 160px; height: 160px; border-radius: 50%;
+      border: 1px solid rgba(194,104,142,0.18);
+      animation: floatB 7s ease-in-out infinite 1s;
+    }
+    .shop-hero-inner {
+      position: relative; z-index: 2;
+      max-width: 580px;
+    }
+    .shop-hero-inner .lbl { animation: fadeUp 0.6s var(--spring) 0.2s both; }
+    .shop-hero-title {
+      font-family: 'Playfair Display', serif; font-weight: 700;
+      font-size: clamp(42px, 6vw, 72px); color: var(--text);
+      line-height: 1.05; letter-spacing: -0.03em;
+      margin-bottom: 20px;
+      animation: fadeUp 0.7s var(--spring) 0.35s both;
+    }
+    .shop-hero-title em { font-style: italic; color: var(--rose); }
+    .shop-hero-sub {
+      font-size: 16px; font-weight: 300; color: var(--muted);
+      line-height: 1.7; max-width: 440px;
+      margin-bottom: 32px;
+      animation: fadeUp 0.7s var(--spring) 0.5s both;
+    }
+    .shop-hero-badges {
+      display: flex; gap: 12px; flex-wrap: wrap;
+      animation: fadeUp 0.7s var(--spring) 0.65s both;
+    }
+    .shop-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 14px; border-radius: 999px;
+      background: rgba(194,104,142,0.08);
+      border: 1px solid rgba(194,104,142,0.2);
+      font-size: 11px; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--rose);
+    }
+
+    /* ── Filter bar ── */
+    #filter-bar {
+      padding: 0 40px 48px;
+    }
+    .filter-inner {
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 9px 20px; border-radius: 3px;
+      border: 1.5px solid rgba(194,104,142,0.22);
+      background: transparent;
+      font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); cursor: pointer;
+      transition: background 0.2s var(--ease), color 0.2s, border-color 0.2s;
+    }
+    .filter-btn:hover { border-color: var(--rose); color: var(--rose); background: var(--blush); }
+    .filter-btn.active { background: var(--rose); color: #fff; border-color: var(--rose); }
+    .filter-btn:focus-visible { outline: 2px solid var(--rose); outline-offset: 2px; }
+
+    /* ── Products grid ── */
+    #products {
+      padding: 0 40px 100px;
+    }
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 28px;
+    }
+    @media (max-width: 600px) {
+      #shop-hero { padding: 120px 24px 60px; }
+      #filter-bar, #products { padding-left: 24px; padding-right: 24px; }
+      .products-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+    }
+    @media (max-width: 400px) {
+      .products-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── Product card ── */
+    .prod-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      transition: transform 0.3s var(--spring), box-shadow 0.3s var(--ease), border-color 0.3s;
+      box-shadow:
+        0 2px 4px rgba(194,104,142,0.04),
+        0 8px 24px rgba(194,104,142,0.09);
+    }
+    .prod-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(194,104,142,0.35);
+      box-shadow:
+        0 4px 8px rgba(194,104,142,0.06),
+        0 20px 48px rgba(194,104,142,0.18);
+    }
+    .prod-img-wrap {
+      position: relative;
+      padding-top: 100%;
+      overflow: hidden;
+      background: var(--floating);
+    }
+    .prod-img-wrap img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s var(--ease);
+    }
+    .prod-card:hover .prod-img-wrap img { transform: scale(1.04); }
+
+    /* Gradient overlay on image */
+    .prod-img-wrap::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(45,20,35,0.28) 0%, transparent 50%);
+      mix-blend-mode: multiply;
+      pointer-events: none;
+    }
+    .prod-badge {
+      position: absolute; top: 12px; left: 12px; z-index: 2;
+      padding: 4px 10px; border-radius: 999px;
+      font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .prod-badge-new { background: var(--rose); color: #fff; }
+    .prod-badge-bundle { background: var(--gold); color: #fff; }
+    .prod-badge-popular {
+      background: rgba(255,248,246,0.92);
+      color: var(--rose);
+      border: 1px solid rgba(194,104,142,0.3);
+    }
+
+    .prod-body {
+      padding: 18px 20px 20px;
+      flex: 1; display: flex; flex-direction: column; gap: 8px;
+    }
+    .prod-cat {
+      font-size: 10px; font-weight: 500; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--rose);
+    }
+    .prod-name {
+      font-family: 'Playfair Display', serif; font-weight: 700;
+      font-size: 18px; color: var(--text); line-height: 1.2;
+    }
+    .prod-desc {
+      font-size: 13px; font-weight: 300; color: var(--muted); line-height: 1.6;
+      flex: 1;
+    }
+    .prod-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 16px; padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+    .prod-price {
+      font-family: 'Playfair Display', serif; font-weight: 700;
+      font-size: 22px; color: var(--text);
+    }
+    .prod-price span {
+      font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 400;
+      color: var(--muted); margin-left: 2px;
+    }
+    .prod-enquire {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 9px 16px; border-radius: 3px;
+      background: var(--rose); color: #fff;
+      font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none;
+      border: none; cursor: pointer;
+      transition: transform 0.25s var(--spring), box-shadow 0.25s var(--ease);
+      box-shadow: 0 4px 14px rgba(194,104,142,0.3);
+    }
+    .prod-enquire:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(194,104,142,0.45); }
+    .prod-enquire:active { transform: translateY(0); }
+
+    /* ── Hidden product (filtered out) ── */
+    .prod-card.hidden { display: none; }
+
+    /* ── Banner strip ── */
+    #shop-banner {
+      background: var(--rose);
+      padding: 18px 40px;
+      text-align: center;
+    }
+    .shop-banner-text {
+      font-size: 13px; font-weight: 400; letter-spacing: 0.12em;
+      text-transform: uppercase; color: rgba(255,255,255,0.9);
+    }
+    .shop-banner-text strong { font-weight: 600; color: #fff; }
+
+    /* ── Info strip ── */
+    #info-strip {
+      background: var(--elevated);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 28px 40px;
+      display: flex; gap: 40px; justify-content: center; flex-wrap: wrap;
+    }
+    .info-item {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 13px; color: var(--muted);
+    }
+    .info-icon {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--floating);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+    }
+    .info-item strong { display: block; font-size: 13px; font-weight: 500; color: var(--text); }
+
+    /* ── Gift card section ── */
+    #gift-section {
+      padding: 80px 40px;
+      background: var(--elevated);
+      border-top: 1px solid var(--border);
+    }
+    .gift-inner {
+      max-width: 900px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+    }
+    @media (max-width: 720px) {
+      .gift-inner { grid-template-columns: 1fr; gap: 32px; }
+      #gift-section, #shop-banner, #info-strip { padding-left: 24px; padding-right: 24px; }
+    }
+    .gift-card-visual {
+      aspect-ratio: 16/10;
+      border-radius: 20px;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 40%, rgba(240,197,216,0.6) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 80% 80%, rgba(194,104,142,0.25) 0%, transparent 60%),
+        linear-gradient(135deg, #fce8f0 0%, #fdf8f5 50%, #fce8f0 100%);
+      border: 1px solid rgba(194,104,142,0.22);
+      box-shadow:
+        0 4px 8px rgba(194,104,142,0.06),
+        0 24px 60px rgba(194,104,142,0.18);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 32px;
+      position: relative; overflow: hidden;
+    }
+    .gift-card-visual::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: 0.025; pointer-events: none;
+    }
+    .gift-card-lbl {
+      font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 500;
+      letter-spacing: 0.3em; text-transform: uppercase; color: var(--rose);
+      margin-bottom: 12px;
+    }
+    .gift-card-wordmark {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-style: italic; font-weight: 300; font-size: 26px;
+      letter-spacing: 0.15em; color: var(--text);
+      margin-bottom: 12px;
+    }
+    .gift-card-amount {
+      font-family: 'Playfair Display', serif; font-weight: 700;
+      font-size: 42px; color: var(--rose); letter-spacing: -0.02em;
+    }
+    .gift-copy .h2 { margin-bottom: 16px; }
+    .gift-copy p {
+      font-size: 15px; font-weight: 300; color: var(--muted);
+      line-height: 1.7; margin-bottom: 28px;
+    }
+    .gift-amounts {
+      display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 28px;
+    }
+    .gift-amount-pill {
+      padding: 8px 18px; border-radius: 999px;
+      border: 1.5px solid rgba(194,104,142,0.25);
+      background: transparent;
+      font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+      color: var(--muted); cursor: pointer;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+    .gift-amount-pill:hover,
+    .gift-amount-pill.active { background: var(--rose); color: #fff; border-color: var(--rose); }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 60px 40px 32px;
+    }
+    .footer-inner { max-width: 1100px; margin: 0 auto; }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+    @media (max-width: 768px) {
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+      footer { padding-left: 24px; padding-right: 24px; }
+    }
+    @media (max-width: 480px) {
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+    .footer-brand-desc {
+      font-size: 13px; font-weight: 300; color: var(--muted); line-height: 1.7; margin-top: 10px;
+    }
+    .footer-col-title {
+      font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 500;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--rose);
+      margin-bottom: 16px;
+    }
+    .footer-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-link {
+      font-size: 13px; font-weight: 300; color: var(--muted); text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-link:hover { color: var(--rose); }
+    .footer-bottom {
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+    }
+    .footer-copy { font-size: 12px; color: var(--muted); }
+
+    /* ── Floating WA ── */
+    #floatWa {
+      position: fixed; bottom: 28px; right: 28px; z-index: 200;
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--wa); display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 24px rgba(37,211,102,0.4);
+      animation: waPulse 3s ease-in-out infinite;
+      transition: transform 0.3s var(--spring);
+      text-decoration: none;
+    }
+    #floatWa:hover { transform: scale(1.1); }
+
+    /* ── Mobile bar ── */
+    #mobileBar {
+      display: none;
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 150;
+      background: rgba(253,248,245,0.96);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border);
+      padding: 12px 20px;
+      gap: 10px;
+    }
+    @media (max-width: 680px) {
+      #mobileBar { display: flex; }
+      #mobileBar .btn { flex: 1; justify-content: center; font-size: 13px; padding: 12px 10px; }
+      body { padding-bottom: 80px; }
+      #floatWa { bottom: 100px; }
+    }
+
+    /* ── Back to top ── */
+    #btt {
+      position: fixed; bottom: 28px; left: 28px; z-index: 200;
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; opacity: 0; pointer-events: none;
+      transition: opacity 0.3s, transform 0.3s var(--spring);
+      box-shadow: 0 4px 16px rgba(194,104,142,0.12);
+    }
+    #btt.vis { opacity: 1; pointer-events: all; }
+    #btt:hover { transform: translateY(-3px); }
+  </style>
+</head>
+<body>
+
+  <!-- ══ FLOATING WA ══ -->
+  <a href="https://wa.me/447464557236" id="floatWa" target="_blank" rel="noopener" aria-label="WhatsApp Louise">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+  </a>
+
+  <!-- ══ BACK TO TOP ══ -->
+  <button id="btt" onclick="scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--muted)"><path d="M18 15l-6-6-6 6"/></svg>
+  </button>
+
+  <!-- ══ NAV ══ -->
+  <nav id="nav" aria-label="Main navigation">
+    <a href="index.html" class="nav-logo" aria-label="Dolled by Louise — home">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 100" height="52" width="146" aria-label="Dolled by Louise">
+        <path d="M10 46 Q70 8 140 46 Q210 84 270 46" stroke="#c97fa0" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+        <path d="M10 46 Q70 84 140 46 Q210 8 270 46" stroke="#c97fa0" stroke-width="1.6" fill="none" stroke-linecap="round" opacity="0.35"/>
+        <circle cx="140" cy="46" r="13" stroke="#c97fa0" stroke-width="1.4" fill="none"/>
+        <circle cx="140" cy="46" r="5" fill="#c97fa0"/>
+        <line x1="60"  y1="22" x2="55"  y2="8"  stroke="#2d1423" stroke-width="1.4" stroke-linecap="round"/>
+        <line x1="88"  y1="12" x2="86"  y2="0"  stroke="#2d1423" stroke-width="1.4" stroke-linecap="round"/>
+        <line x1="116" y1="8"  x2="116" y2="0"  stroke="#2d1423" stroke-width="1.4" stroke-linecap="round"/>
+        <line x1="140" y1="7"  x2="140" y2="0"  stroke="#2d1423" stroke-width="1.4" stroke-linecap="round"/>
+        <line x1="164" y1="8"  x2="165" y2="0"  stroke="#2d1423" stroke-width="1.4" stroke-linecap="round"/>
+        <line x1="192" y1="12" x2="194" y2="0"  stroke="#2d1423" stroke-width="1.4" stroke-linecap="round"/>
+        <line x1="220" y1="22" x2="225" y2="8"  stroke="#2d1423" stroke-width="1.4" stroke-linecap="round"/>
+        <text x="140" y="90" text-anchor="middle" font-family="'Cormorant Garamond', Georgia, serif" font-size="22" font-style="italic" font-weight="300" letter-spacing="3" fill="#2d1423">Dolled by Louise</text>
+      </svg>
+    </a>
+    <div class="nav-links">
+      <a href="index.html#services"  class="nav-link">Services</a>
+      <a href="index.html#pricing"   class="nav-link">Pricing</a>
+      <a href="index.html#lash-club" class="nav-link" style="color:var(--rose);font-weight:500;">✦ Club</a>
+      <a href="index.html#gallery"   class="nav-link">Gallery</a>
+      <a href="index.html#about"     class="nav-link">About</a>
+      <a href="index.html#faq"       class="nav-link">FAQ</a>
+      <a href="marketplace.html"     class="nav-link active">Shop</a>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <a href="tel:+447464557236" class="btn btn-outline nav-call-btn" style="padding:9px 16px;font-size:12px;">📞 Call</a>
+      <a href="https://wa.me/447464557236?text=Hi%20Louise!%20I'd%20love%20to%20book%20an%20appointment%20%F0%9F%92%95" target="_blank" rel="noopener" class="btn btn-wa" style="padding:9px 20px;font-size:12px;" aria-label="WhatsApp to book">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        Book Now
+      </a>
+    </div>
+  </nav>
+
+  <main id="main">
+
+    <!-- ── SHOP HERO ── -->
+    <section id="shop-hero">
+      <div class="shop-hero-bg" aria-hidden="true"></div>
+      <div class="shop-hero-orb-a" aria-hidden="true"></div>
+      <div class="shop-hero-orb-b" aria-hidden="true"></div>
+      <div class="shop-hero-inner">
+        <p class="lbl">✦ Dolled by Louise</p>
+        <h1 class="shop-hero-title">Lash Care,<br><em>Delivered.</em></h1>
+        <p class="shop-hero-sub">Professional-grade aftercare products and accessories to keep your lashes looking flawless between appointments. Curated by Louise herself.</p>
+        <div class="shop-hero-badges">
+          <span class="shop-badge">✦ Professional grade</span>
+          <span class="shop-badge">✦ Louise approved</span>
+          <span class="shop-badge">✦ Lash-safe formulas</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── BANNER STRIP ── -->
+    <div id="shop-banner" role="banner">
+      <p class="shop-banner-text"><strong>Free delivery</strong> on all orders over £30 &nbsp;·&nbsp; <strong>WhatsApp to order</strong> — fast &amp; easy</p>
+    </div>
+
+    <!-- ── INFO STRIP ── -->
+    <div id="info-strip">
+      <div class="info-item">
+        <div class="info-icon" aria-hidden="true">🌸</div>
+        <div><strong>Lash-safe formulas</strong>Oil-free, extension friendly</div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon" aria-hidden="true">💬</div>
+        <div><strong>Order via WhatsApp</strong>Quick, simple, personal</div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon" aria-hidden="true">📦</div>
+        <div><strong>Posted to your door</strong>Or collect from Louise</div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon" aria-hidden="true">✦</div>
+        <div><strong>Pro-recommended</strong>Everything Louise uses</div>
+      </div>
+    </div>
+
+    <!-- ── FILTER BAR ── -->
+    <section id="filter-bar" aria-label="Filter products">
+      <div class="filter-inner reveal">
+        <button class="filter-btn active" onclick="filterProducts('all', this)" aria-pressed="true">All Products</button>
+        <button class="filter-btn" onclick="filterProducts('aftercare', this)" aria-pressed="false">Aftercare</button>
+        <button class="filter-btn" onclick="filterProducts('kits', this)" aria-pressed="false">Kits &amp; Bundles</button>
+        <button class="filter-btn" onclick="filterProducts('accessories', this)" aria-pressed="false">Accessories</button>
+        <button class="filter-btn" onclick="filterProducts('gift', this)" aria-pressed="false">Gift Cards</button>
+      </div>
+    </section>
+
+    <!-- ── PRODUCTS ── -->
+    <section id="products" aria-label="Products">
+      <div class="products-grid">
+
+        <!-- Lash Aftercare Kit -->
+        <div class="prod-card reveal" data-cat="kits" style="transition-delay:.05s">
+          <div class="prod-img-wrap">
+            <img src="https://placehold.co/500x500/fce8f0/c97fa0?text=Aftercare+Kit" alt="Lash Aftercare Starter Kit" loading="lazy">
+            <span class="prod-badge prod-badge-bundle">Bundle</span>
+          </div>
+          <div class="prod-body">
+            <p class="prod-cat">Kits &amp; Bundles</p>
+            <p class="prod-name">Lash Aftercare Starter Kit</p>
+            <p class="prod-desc">Everything you need to care for your new lashes. Includes our foam cleanser, a spoolie set, and a mini lash serum — all in a branded pouch.</p>
+            <div class="prod-footer">
+              <p class="prod-price">£24<span>.99</span></p>
+              <a href="https://wa.me/447464557236?text=Hi%20Louise!%20I'd%20love%20to%20order%20the%20Lash%20Aftercare%20Starter%20Kit%20%F0%9F%92%95"
+                 target="_blank" rel="noopener" class="prod-enquire" aria-label="Order Lash Aftercare Starter Kit via WhatsApp">
+                Order ✦
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lash Foam Cleanser -->
+        <div class="prod-card reveal" data-cat="aftercare" style="transition-delay:.1s">
+          <div class="prod-img-wrap">
+            <img src="https://placehold.co/500x500/fff0f6/c97fa0?text=Foam+Cleanser" alt="Lash Extension Foam Cleanser" loading="lazy">
+            <span class="prod-badge prod-badge-popular">Most popular</span>
+          </div>
+          <div class="prod-body">
+            <p class="prod-cat">Aftercare</p>
+            <p class="prod-name">Lash Extension Foam Cleanser</p>
+            <p class="prod-desc">Gentle, oil-free foam formula that deep cleans your lash line without breaking down the adhesive bond. Use daily for lash longevity.</p>
+            <div class="prod-footer">
+              <p class="prod-price">£9<span>.99</span></p>
+              <a href="https://wa.me/447464557236?text=Hi%20Louise!%20I'd%20love%20to%20order%20the%20Lash%20Foam%20Cleanser%20%F0%9F%92%95"
+                 target="_blank" rel="noopener" class="prod-enquire" aria-label="Order Foam Cleanser via WhatsApp">
+                Order ✦
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lash Serum -->
+        <div class="prod-card reveal" data-cat="aftercare" style="transition-delay:.15s">
+          <div class="prod-img-wrap">
+            <img src="https://placehold.co/500x500/fdf8f5/c97fa0?text=Lash+Serum" alt="Lash Conditioning Serum" loading="lazy">
+            <span class="prod-badge prod-badge-new">New</span>
+          </div>
+          <div class="prod-body">
+            <p class="prod-cat">Aftercare</p>
+            <p class="prod-name">Lash Conditioning Serum</p>
+            <p class="prod-desc">Nourishing serum packed with peptides and biotin to strengthen your natural lashes and promote healthy growth underneath your extensions.</p>
+            <div class="prod-footer">
+              <p class="prod-price">£14<span>.99</span></p>
+              <a href="https://wa.me/447464557236?text=Hi%20Louise!%20I'd%20love%20to%20order%20the%20Lash%20Conditioning%20Serum%20%F0%9F%92%95"
+                 target="_blank" rel="noopener" class="prod-enquire" aria-label="Order Lash Serum via WhatsApp">
+                Order ✦
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Spoolie Set -->
+        <div class="prod-card reveal" data-cat="accessories" style="transition-delay:.2s">
+          <div class="prod-img-wrap">
+            <img src="https://placehold.co/500x500/fce8f0/c97fa0?text=Spoolie+Set" alt="Lash Spoolie Brush Set" loading="lazy">
+          </div>
+          <div class="prod-body">
+            <p class="prod-cat">Accessories</p>
+            <p class="prod-name">Spoolie Brush Set</p>
+            <p class="prod-desc">A pack of 10 disposable and 2 reusable spoolie brushes. Perfect for daily grooming — brush through each morning to keep lashes neat and defined.</p>
+            <div class="prod-footer">
+              <p class="prod-price">£5<span>.99</span></p>
+              <a href="https://wa.me/447464557236?text=Hi%20Louise!%20I'd%20love%20to%20order%20the%20Spoolie%20Brush%20Set%20%F0%9F%92%95"
+                 target="_blank" rel="noopener" class="prod-enquire" aria-label="Order Spoolie Set via WhatsApp">
+                Order ✦
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lash Pillow -->
+        <div class="prod-card reveal" data-cat="accessories" style="transition-delay:.25s">
+          <div class="prod-img-wrap">
+            <img src="https://placehold.co/500x500/fff0f6/c97fa0?text=Lash+Pillow" alt="Lash Extension Silk Pillow" loading="lazy">
+          </div>
+          <div class="prod-body">
+            <p class="prod-cat">Accessories</p>
+            <p class="prod-name">Silk Lash Pillowcase</p>
+            <p class="prod-desc">Sleep on silk to dramatically reduce friction on your extensions. This 100% mulberry silk pillowcase extends fill life and keeps lashes intact overnight.</p>
+            <div class="prod-footer">
+              <p class="prod-price">£19<span>.99</span></p>
+              <a href="https://wa.me/447464557236?text=Hi%20Louise!%20I'd%20love%20to%20order%20the%20Silk%20Lash%20Pillowcase%20%F0%9F%92%95"
+                 target="_blank" rel="noopener" class="prod-enquire" aria-label="Order Silk Pillowcase via WhatsApp">
+                Order ✦
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Luxury Bundle -->
+        <div class="prod-card reveal" data-cat="kits" style="transition-delay:.3s">
+          <div class="prod-img-wrap">
+            <img src="https://placehold.co/500x500/fce8f0/c97fa0?text=Luxury+Bundle" alt="Luxury Lash Bundle" loading="lazy">
+            <span class="prod-badge prod-badge-bundle">Bundle</span>
+          </div>
+          <div class="prod-body">
+            <p class="prod-cat">Kits &amp; Bundles</p>
+            <p class="prod-name">The Luxury Lash Bundle</p>
+            <p class="prod-desc">The full works — foam cleanser, conditioning serum, spoolie set, silk pillowcase, and a handwritten aftercare card from Louise. Perfect as a gift.</p>
+            <div class="prod-footer">
+              <p class="prod-price">£44<span>.99</span></p>
+              <a href="https://wa.me/447464557236?text=Hi%20Louise!%20I'd%20love%20to%20order%20the%20Luxury%20Lash%20Bundle%20%F0%9F%92%95"
+                 target="_blank" rel="noopener" class="prod-enquire" aria-label="Order Luxury Bundle via WhatsApp">
+                Order ✦
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lash Remover -->
+        <div class="prod-card reveal" data-cat="aftercare" style="transition-delay:.35s">
+          <div class="prod-img-wrap">
+            <img src="https://placehold.co/500x500/fdf8f5/c97fa0?text=Lash+Remover" alt="Gentle Lash Remover" loading="lazy">
+          </div>
+          <div class="prod-body">
+            <p class="prod-cat">Aftercare</p>
+            <p class="prod-name">Gentle Lash Remover</p>
+            <p class="prod-desc">Safe, professional-grade remover gel for at-home use between visits. Dissolves adhesive gently without damaging your natural lashes.</p>
+            <div class="prod-footer">
+              <p class="prod-price">£11<span>.99</span></p>
+              <a href="https://wa.me/447464557236?text=Hi%20Louise!%20I'd%20love%20to%20order%20the%20Gentle%20Lash%20Remover%20%F0%9F%92%95"
+                 target="_blank" rel="noopener" class="prod-enquire" aria-label="Order Lash Remover via WhatsApp">
+                Order ✦
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gift Card placeholder — full card in gift section below, just a card here -->
+        <div class="prod-card reveal" data-cat="gift" style="transition-delay:.4s">
+          <div class="prod-img-wrap">
+            <img src="https://placehold.co/500x500/fce8f0/c97fa0?text=Gift+Card" alt="Dolled by Louise Gift Card" loading="lazy">
+            <span class="prod-badge prod-badge-new">Popular gift</span>
+          </div>
+          <div class="prod-body">
+            <p class="prod-cat">Gift Cards</p>
+            <p class="prod-name">Experience Gift Card</p>
+            <p class="prod-desc">Give the gift of gorgeous lashes. Choose any amount and Louise will send a beautifully presented digital or physical gift card — perfect for any occasion.</p>
+            <div class="prod-footer">
+              <p class="prod-price">From<span> £25</span></p>
+              <a href="https://wa.me/447464557236?text=Hi%20Louise!%20I'd%20love%20to%20order%20a%20Gift%20Card%20%F0%9F%92%95"
+                 target="_blank" rel="noopener" class="prod-enquire" aria-label="Order Gift Card via WhatsApp">
+                Order ✦
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── GIFT CARD SECTION ── -->
+    <section id="gift-section">
+      <div class="gift-inner">
+        <div class="gift-card-visual reveal">
+          <p class="gift-card-lbl">✦ Gift Card</p>
+          <p class="gift-card-wordmark">Dolled by Louise</p>
+          <p class="gift-card-amount" id="giftDisplayAmount">£25</p>
+        </div>
+        <div class="gift-copy reveal" style="transition-delay:.15s">
+          <p class="lbl">✦ Give the gift of lashes</p>
+          <h2 class="h2">Gift <em>Cards</em></h2>
+          <p>Treat someone you love to a professional lash appointment or products. Gift cards are valid for all services and can be used on any booking with Louise.</p>
+          <div class="gift-amounts">
+            <button class="gift-amount-pill active" onclick="selectGiftAmount('£25', this)">£25</button>
+            <button class="gift-amount-pill" onclick="selectGiftAmount('£40', this)">£40</button>
+            <button class="gift-amount-pill" onclick="selectGiftAmount('£60', this)">£60</button>
+            <button class="gift-amount-pill" onclick="selectGiftAmount('£80', this)">£80</button>
+            <button class="gift-amount-pill" onclick="selectGiftAmount('£100', this)">£100</button>
+          </div>
+          <a href="https://wa.me/447464557236?text=Hi%20Louise!%20I'd%20love%20to%20order%20a%20gift%20card%20%F0%9F%92%95"
+             target="_blank" rel="noopener" class="btn btn-rose">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+            Order via WhatsApp
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ══ FOOTER ══ -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 100" height="56" width="157" aria-label="Dolled by Louise" style="display:block;margin-bottom:10px;">
+            <path d="M10 46 Q70 8 140 46 Q210 84 270 46" stroke="#c97fa0" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+            <path d="M10 46 Q70 84 140 46 Q210 8 270 46" stroke="#c97fa0" stroke-width="1.6" fill="none" stroke-linecap="round" opacity="0.35"/>
+            <circle cx="140" cy="46" r="13" stroke="#c97fa0" stroke-width="1.4" fill="none"/>
+            <circle cx="140" cy="46" r="5" fill="#c97fa0"/>
+            <line x1="60" y1="22" x2="55" y2="8" stroke="#2d1423" stroke-width="1.4" stroke-linecap="round"/>
+            <line x1="88" y1="12" x2="86" y2="0" stroke="#2d1423" stroke-width="1.4" stroke-linecap="round"/>
+            <line x1="116" y1="8" x2="116" y2="0" stroke="#2d1423" stroke-width="1.4" stroke-linecap="round"/>
+            <line x1="140" y1="7" x2="140" y2="0" stroke="#2d1423" stroke-width="1.4" stroke-linecap="round"/>
+            <line x1="164" y1="8" x2="165" y2="0" stroke="#2d1423" stroke-width="1.4" stroke-linecap="round"/>
+            <line x1="192" y1="12" x2="194" y2="0" stroke="#2d1423" stroke-width="1.4" stroke-linecap="round"/>
+            <line x1="220" y1="22" x2="225" y2="8" stroke="#2d1423" stroke-width="1.4" stroke-linecap="round"/>
+            <text x="140" y="90" text-anchor="middle" font-family="'Cormorant Garamond', Georgia, serif" font-size="22" font-style="italic" font-weight="300" letter-spacing="3" fill="#2d1423">Dolled by Louise</text>
+          </svg>
+          <p class="footer-brand-desc">Expert lash lifts and extensions in Longtown, Cumbria. Professional, personal, and always precision-applied.</p>
+        </div>
+        <div>
+          <p class="footer-col-title">Services</p>
+          <ul class="footer-list">
+            <li><a href="index.html#services" class="footer-link">Korean Lash Lift</a></li>
+            <li><a href="index.html#services" class="footer-link">LVL Lashes</a></li>
+            <li><a href="index.html#services" class="footer-link">Classic Extensions</a></li>
+            <li><a href="index.html#services" class="footer-link">Hybrid Extensions</a></li>
+            <li><a href="index.html#services" class="footer-link">Russian Volume</a></li>
+            <li><a href="index.html#services" class="footer-link">Mega Volume</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer-col-title">Shop</p>
+          <ul class="footer-list">
+            <li><a href="marketplace.html" class="footer-link">All Products</a></li>
+            <li><a href="marketplace.html" class="footer-link">Aftercare</a></li>
+            <li><a href="marketplace.html" class="footer-link">Kits &amp; Bundles</a></li>
+            <li><a href="marketplace.html" class="footer-link">Accessories</a></li>
+            <li><a href="marketplace.html" class="footer-link">Gift Cards</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer-col-title">Contact</p>
+          <ul class="footer-list">
+            <li><a href="https://wa.me/447464557236" target="_blank" rel="noopener" class="footer-link">WhatsApp Louise</a></li>
+            <li><a href="tel:+447464557236" class="footer-link">+44 7464 557236</a></li>
+            <li><a href="mailto:louisetrainorr@gmail.com" class="footer-link">louisetrainorr@gmail.com</a></li>
+            <li><span class="footer-link" style="cursor:default;">33 Albert Street, Longtown</span></li>
+            <li><span class="footer-link" style="cursor:default;">Cumbria, CA6 5SF</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-copy">&copy; 2026 Dolled by Louise. All rights reserved.</p>
+        <p class="footer-copy">Longtown, Cumbria</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ══ MOBILE BAR ══ -->
+  <div id="mobileBar" role="navigation" aria-label="Mobile booking bar">
+    <a href="tel:+447464557236" class="btn btn-outline" aria-label="Call Louise">📞 Call</a>
+    <a href="https://wa.me/447464557236?text=Hi%20Louise!%20I'd%20love%20to%20book%20%F0%9F%92%95" target="_blank" rel="noopener" class="btn btn-wa" aria-label="WhatsApp to book">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+      WhatsApp
+    </a>
+  </div>
+
+  <script>
+    // ── Scroll reveals ──
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); observer.unobserve(e.target); } });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // ── Nav scroll ──
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    // ── Back to top ──
+    const btt = document.getElementById('btt');
+    window.addEventListener('scroll', () => {
+      btt.classList.toggle('vis', window.scrollY > 400);
+    }, { passive: true });
+
+    // ── Product filter ──
+    function filterProducts(cat, btn) {
+      // Update button states
+      document.querySelectorAll('.filter-btn').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-pressed', 'true');
+
+      // Show/hide cards
+      document.querySelectorAll('.prod-card').forEach(card => {
+        if (cat === 'all' || card.dataset.cat === cat) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    }
+
+    // ── Gift card amount selector ──
+    function selectGiftAmount(amount, btn) {
+      document.querySelectorAll('.gift-amount-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('giftDisplayAmount').textContent = amount;
+    }
+  </script>
+</body>
+</html>

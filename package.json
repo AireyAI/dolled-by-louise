@@ -1,0 +1,12 @@
+{
+  "name": "dolled-by-louise",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "node --watch server.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.88.0"
+  }
+}

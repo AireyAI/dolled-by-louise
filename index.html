@@ -226,19 +226,132 @@
       background: rgba(194,104,142,0.08);
       animation: floatA 5s ease-in-out infinite 2s;
     }
-    /* Photo placeholder tile */
-    .hero-img-tile {
-      position: absolute; top: 0; right: 0; bottom: 0; z-index: 1;
-      width: 48%; pointer-events: none;
-      background:
-        linear-gradient(to right, var(--base) 0%, transparent 25%),
-        linear-gradient(to top, var(--base) 0%, transparent 25%);
+    /* ── Hero right panel ── */
+    .hero-panel-wrap {
+      position: absolute; top: 0; right: 0; bottom: 0; z-index: 3;
+      width: 46%;
+      display: flex; align-items: center; justify-content: center;
+      padding: 90px 48px 60px;
+      pointer-events: all;
     }
-    .hero-img-tile img {
-      position: absolute; inset: 0; width: 100%; height: 100%;
-      object-fit: cover; opacity: 0.4;
-      animation: fadeIn 1.4s var(--ease) 0.2s both;
+    @media (max-width: 960px) { .hero-panel-wrap { display: none; } }
+
+    .hero-panel {
+      width: 100%; max-width: 360px;
+      background: rgba(255,248,246,0.9);
+      backdrop-filter: blur(24px) saturate(1.4);
+      -webkit-backdrop-filter: blur(24px) saturate(1.4);
+      border: 1px solid rgba(194,104,142,0.22);
+      border-radius: 20px;
+      padding: 26px;
+      box-shadow:
+        0 2px 4px rgba(194,104,142,0.05),
+        0 8px 32px rgba(194,104,142,0.14),
+        0 40px 80px rgba(194,104,142,0.1);
+      animation: fadeUp 1s var(--spring) 1s both;
     }
+
+    .hp-tabs {
+      display: flex; gap: 4px;
+      background: var(--base); border-radius: 10px; padding: 4px;
+      margin-bottom: 20px;
+    }
+    .hp-tab {
+      flex: 1; padding: 8px 10px; border: none; border-radius: 8px;
+      font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 500;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      cursor: pointer; background: transparent; color: var(--muted);
+      transition: background 0.25s var(--ease), color 0.25s;
+    }
+    .hp-tab.active { background: var(--rose); color: #fff; }
+    .hp-tab:focus-visible { outline: 2px solid var(--rose); outline-offset: 2px; }
+
+    .hp-pane { display: none; }
+    .hp-pane.active { display: block; animation: fadeUp 0.35s var(--spring) both; }
+
+    /* Quiz pane */
+    .hq-progress { display: flex; gap: 5px; margin-bottom: 16px; }
+    .hq-dot {
+      height: 3px; flex: 1; border-radius: 2px;
+      background: rgba(194,104,142,0.18);
+      transition: background 0.35s;
+    }
+    .hq-dot.done { background: var(--rose); }
+
+    .hq-step { display: none; }
+    .hq-step.active { display: block; animation: fadeUp 0.3s var(--spring) both; }
+
+    .hq-label {
+      font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 500;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--rose);
+      margin-bottom: 7px;
+    }
+    .hq-q {
+      font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400;
+      font-size: 17px; color: var(--text); line-height: 1.4; margin-bottom: 14px;
+    }
+    .hq-choices { display: flex; flex-direction: column; gap: 8px; }
+    .hq-choice {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; border: 1.5px solid var(--border);
+      border-radius: 10px; background: var(--base);
+      cursor: pointer; text-align: left; width: 100%;
+      font-family: 'DM Sans', sans-serif; font-size: 12px; color: var(--text);
+      transition: border-color 0.2s, background 0.2s, transform 0.2s var(--spring);
+    }
+    .hq-choice:hover { border-color: var(--rose); background: var(--blush); transform: translateX(3px); }
+    .hq-choice:active { transform: scale(0.98); }
+    .hq-choice:focus-visible { outline: 2px solid var(--rose); outline-offset: 2px; }
+    .hq-icon { font-size: 15px; flex-shrink: 0; }
+
+    /* Result */
+    .hq-result { display: none; }
+    .hq-result.show { display: block; animation: fadeUp 0.4s var(--spring) both; }
+    .hq-result-badge {
+      display: inline-block;
+      background: var(--blush); border: 1px solid rgba(194,104,142,0.22);
+      border-radius: 20px; padding: 3px 11px;
+      font-family: 'DM Sans', sans-serif; font-size: 9px; font-weight: 500;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--rose);
+      margin-bottom: 9px;
+    }
+    .hq-result-name {
+      font-family: 'Playfair Display', serif; font-weight: 700; font-style: italic;
+      font-size: 22px; color: var(--text); line-height: 1.15; margin-bottom: 7px;
+    }
+    .hq-result-desc { font-size: 12px; color: var(--muted); line-height: 1.65; margin-bottom: 14px; }
+    .hq-book-cta {
+      width: 100%; justify-content: center; font-size: 12px; padding: 11px 20px;
+    }
+    .hq-retake {
+      background: none; border: none; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-size: 11px; color: var(--muted);
+      letter-spacing: 0.05em; padding: 0; margin-top: 10px; display: block;
+      transition: color 0.2s;
+    }
+    .hq-retake:hover { color: var(--rose); }
+
+    /* Booking pane */
+    .hb-label {
+      font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 500;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--rose);
+      margin-bottom: 5px;
+    }
+    .hb-title {
+      font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400;
+      font-size: 18px; color: var(--text); line-height: 1.3; margin-bottom: 14px;
+    }
+    .hb-form { display: flex; flex-direction: column; gap: 8px; }
+    .hb-input {
+      width: 100%; padding: 10px 13px;
+      background: var(--base); border: 1.5px solid var(--border);
+      border-radius: 9px;
+      font-family: 'DM Sans', sans-serif; font-size: 12px; color: var(--text);
+      outline: none; transition: border-color 0.2s;
+    }
+    .hb-input:focus { border-color: var(--rose); }
+    .hb-input::placeholder { color: var(--muted); }
+    .hb-submit { width: 100%; justify-content: center; font-size: 12px; padding: 11px 20px; margin-top: 2px; }
     .hero-content {
       position: relative; z-index: 2; max-width: 620px;
     }
@@ -761,9 +874,93 @@
       <div class="hero-orb-a" aria-hidden="true"></div>
       <div class="hero-orb-b" aria-hidden="true"></div>
       <div class="hero-orb-c" aria-hidden="true"></div>
-      <!-- Right image tile -->
-      <div class="hero-img-tile" aria-hidden="true">
-        <img src="https://placehold.co/960x1200/1c1018/c97fa0?text=." alt="">
+      <!-- Right interactive panel -->
+      <div class="hero-panel-wrap">
+        <div class="hero-panel">
+
+          <!-- Tabs -->
+          <div class="hp-tabs" role="tablist">
+            <button class="hp-tab active" id="tabQuiz" role="tab" aria-selected="true" onclick="switchHeroTab('quiz')">Find My Style</button>
+            <button class="hp-tab" id="tabBook" role="tab" aria-selected="false" onclick="switchHeroTab('book')">Quick Book</button>
+          </div>
+
+          <!-- ── Quiz pane ── -->
+          <div class="hp-pane active" id="paneQuiz" role="tabpanel">
+            <div class="hq-progress">
+              <div class="hq-dot" id="hqd0"></div>
+              <div class="hq-dot" id="hqd1"></div>
+              <div class="hq-dot" id="hqd2"></div>
+            </div>
+
+            <!-- Step 1 -->
+            <div class="hq-step active" id="hqs1">
+              <p class="hq-label">✦ Step 1 of 3</p>
+              <p class="hq-q">What look are you going for?</p>
+              <div class="hq-choices">
+                <button class="hq-choice" onclick="hqAnswer(1,'natural')"><span class="hq-icon">✨</span> Natural &amp; subtle</button>
+                <button class="hq-choice" onclick="hqAnswer(1,'defined')"><span class="hq-icon">💕</span> Polished &amp; defined</button>
+                <button class="hq-choice" onclick="hqAnswer(1,'full')"><span class="hq-icon">👑</span> Full glam, always</button>
+              </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="hq-step" id="hqs2">
+              <p class="hq-label">✦ Step 2 of 3</p>
+              <p class="hq-q">How much upkeep works for you?</p>
+              <div class="hq-choices">
+                <button class="hq-choice" onclick="hqAnswer(2,'low')"><span class="hq-icon">🕊️</span> Set it &amp; forget it</button>
+                <button class="hq-choice" onclick="hqAnswer(2,'high')"><span class="hq-icon">📅</span> Infills every 2–3 weeks, fine</button>
+              </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="hq-step" id="hqs3">
+              <p class="hq-label">✦ Step 3 of 3</p>
+              <p class="hq-q">Had lash extensions before?</p>
+              <div class="hq-choices">
+                <button class="hq-choice" onclick="hqAnswer(3,'yes')"><span class="hq-icon">🌸</span> First time!</button>
+                <button class="hq-choice" onclick="hqAnswer(3,'no')"><span class="hq-icon">⭐</span> Yes, I'm a regular</button>
+              </div>
+            </div>
+
+            <!-- Result -->
+            <div class="hq-result" id="hqResult">
+              <div class="hq-result-badge">✦ Your perfect match</div>
+              <p class="hq-result-name" id="hqResultName"></p>
+              <p class="hq-result-desc" id="hqResultDesc"></p>
+              <a id="hqResultCTA" href="#" target="_blank" rel="noopener" class="btn btn-wa hq-book-cta">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+                Book this treatment
+              </a>
+              <button class="hq-retake" onclick="hqReset()">← Retake quiz</button>
+            </div>
+          </div>
+
+          <!-- ── Book pane ── -->
+          <div class="hp-pane" id="paneBook" role="tabpanel">
+            <p class="hb-label">✦ Book with Louise</p>
+            <p class="hb-title">Request an appointment</p>
+            <form class="hb-form" onsubmit="return hbSubmit(event)">
+              <input type="text" class="hb-input" id="hbName" placeholder="Your name" required>
+              <input type="tel" class="hb-input" id="hbPhone" placeholder="Your WhatsApp number">
+              <select class="hb-input" id="hbService">
+                <option value="">Choose a service…</option>
+                <option>Korean Lash Lift</option>
+                <option>LVL Lashes</option>
+                <option>Lift + Tint Combo</option>
+                <option>Classic Extensions</option>
+                <option>Hybrid Extensions</option>
+                <option>Russian Volume</option>
+                <option>Mega Volume</option>
+                <option>Infills</option>
+              </select>
+              <input type="date" class="hb-input" id="hbDate">
+              <textarea class="hb-input" id="hbNote" placeholder="Any notes? (optional)" rows="2" style="resize:none;"></textarea>
+              <button type="submit" class="btn btn-rose hb-submit">Send via WhatsApp 💕</button>
+            </form>
+          </div>
+
+        </div>
       </div>
       <!-- Content -->
       <div class="hero-content">
@@ -1281,6 +1478,86 @@
       slider.addEventListener('pointerup',   () => { drag = false; });
       slider.addEventListener('pointercancel', () => { drag = false; });
     })();
+
+    // ── Hero panel: tab switching ──
+    function switchHeroTab(tab) {
+      ['Quiz','Book'].forEach(t => {
+        const id = t.toLowerCase();
+        document.getElementById('tab'+t).classList.toggle('active', id===tab);
+        document.getElementById('pane'+t).classList.toggle('active', id===tab);
+        document.getElementById('tab'+t).setAttribute('aria-selected', id===tab);
+      });
+    }
+
+    // ── Hero panel: quiz ──
+    const hqAnswers = {};
+    const hqData = {
+      'natural-low':      { name:'Korean Lash Lift',   desc:'A gentle lift for a wide-awake curl — lasts 6–8 weeks with zero upkeep. Wake up looking naturally gorgeous.',       wa:'Korean+Lash+Lift' },
+      'natural-high-yes': { name:'Classic Extensions', desc:'One extension per lash. Naturally long and defined — the perfect starting point for first-timers.',                 wa:'Classic+Extensions' },
+      'natural-high-no':  { name:'Classic Extensions', desc:'One extension per lash for a clean, effortless look you\'ll want to wear every single day.',                        wa:'Classic+Extensions' },
+      'defined-low':      { name:'LVL Lash Lift',      desc:'Lifts from the root for a stunning wide-eye effect. Lasts 6–8 weeks — no infills, no fuss.',                       wa:'LVL+Lash+Lift' },
+      'defined-high-yes': { name:'Hybrid Extensions',  desc:'Classic meets volume for a polished, textured look. The perfect introduction to fuller lashes.',                    wa:'Hybrid+Extensions' },
+      'defined-high-no':  { name:'Hybrid Extensions',  desc:'Classic meets volume for a lush, defined look that turns heads without going full glam.',                           wa:'Hybrid+Extensions' },
+      'full-low':         { name:'Lift + Tint Combo',  desc:'Your lashes lifted AND darkened in one appointment. Maximum natural drama — zero maintenance required.',             wa:'Lift+Tint+Combo' },
+      'full-high-yes':    { name:'Russian Volume',      desc:'Handcrafted fans of ultra-fine lashes for a full, fluffy look. Bold, dramatic, and completely stunning.',           wa:'Russian+Volume' },
+      'full-high-no':     { name:'Mega Volume',         desc:'The most dramatic result possible. Ultra-fine fans stacked for jaw-dropping fullness — for the lash obsessed.',    wa:'Mega+Volume' },
+    };
+
+    function hqAnswer(step, val) {
+      hqAnswers[step] = val;
+      document.getElementById('hqs'+step).classList.remove('active');
+      document.getElementById('hqd'+(step-1)).classList.add('done');
+      if (step === 1) {
+        document.getElementById('hqs2').classList.add('active');
+      } else if (step === 2) {
+        if (val === 'low') { hqShowResult(hqAnswers[1]+'-low'); }
+        else { document.getElementById('hqs3').classList.add('active'); }
+      } else {
+        const key = hqAnswers[1]+'-high-'+val;
+        hqShowResult(hqData[key] ? key : hqAnswers[1]+'-high-yes');
+      }
+    }
+
+    function hqShowResult(key) {
+      const r = hqData[key] || hqData['natural-low'];
+      document.getElementById('hqResultName').textContent = r.name;
+      document.getElementById('hqResultDesc').textContent = r.desc;
+      document.getElementById('hqResultCTA').href = 'https://wa.me/447464557236?text=Hi+Louise!+I%27d+love+to+book+a+'+r.wa;
+      document.getElementById('hqResult').classList.add('show');
+    }
+
+    function hqReset() {
+      Object.keys(hqAnswers).forEach(k => delete hqAnswers[k]);
+      [1,2,3].forEach(i => document.getElementById('hqs'+i).classList.toggle('active', i===1));
+      [0,1,2].forEach(i => document.getElementById('hqd'+i).classList.remove('done'));
+      document.getElementById('hqResult').classList.remove('show');
+    }
+
+    // ── Hero panel: booking form ──
+    (function(){
+      const d = document.getElementById('hbDate');
+      if (d) d.min = new Date().toISOString().split('T')[0];
+    })();
+
+    function hbSubmit(e) {
+      e.preventDefault();
+      const name    = document.getElementById('hbName').value.trim();
+      const phone   = document.getElementById('hbPhone').value.trim();
+      const service = document.getElementById('hbService').value;
+      const date    = document.getElementById('hbDate').value;
+      const note    = document.getElementById('hbNote').value.trim();
+      let msg = 'Hi Louise! 💕';
+      if (name)    msg += ' My name is ' + name + '.';
+      if (service) msg += ' I\'d love to book: ' + service + '.';
+      if (date) {
+        const d = new Date(date);
+        msg += ' Preferred date: ' + d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'}) + '.';
+      }
+      if (phone)   msg += ' My WhatsApp: ' + phone + '.';
+      if (note)    msg += ' Note: ' + note;
+      window.open('https://wa.me/447464557236?text=' + encodeURIComponent(msg), '_blank');
+      return false;
+    }
 
     // ── Quiz ──
     const quizAnswers = {};

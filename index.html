@@ -8,6 +8,11 @@
   <meta property="og:title" content="Dolled by Louise — Lash Artist in Longtown, Cumbria">
   <meta property="og:description" content="Expert lash lifts and extensions. Call or WhatsApp Louise to book.">
   <meta property="og:type" content="website">
+  <meta property="og:image" content="https://placehold.co/1200x630/130a10/c2688e?text=Dolled+by+Louise">
+  <meta property="og:url" content="https://dolledbylouise.co.uk">
+  <meta name="theme-color" content="#130a10">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="canonical" href="https://dolledbylouise.co.uk">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -29,6 +34,55 @@
     },
     "url": "https://dolledbylouise.co.uk",
     "priceRange": "££"
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How long do lash extensions last?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Most clients come back for infills every 2–3 weeks. Your natural lash cycle means individual extensions shed gradually — infills top them back up."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Will extensions damage my natural lashes?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "When applied correctly and maintained properly, no. Louise uses lightweight extensions matched to your natural lash strength and trains in safe application techniques."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How long does a lash lift last?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A lash lift typically lasts 6–8 weeks, depending on your natural lash growth cycle. A tint added at the same time darkens lashes for a mascara-free look."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What's the difference between Hybrid and Russian Volume?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Hybrid mixes classic (one extension per lash) and volume (fan of 2–6 lashes) for a textured, full look. Russian Volume is all fans — resulting in softer, fluffier, more dramatic fullness."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I book an appointment?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The easiest way is via WhatsApp — tap the button on this page to message Louise directly. You can also call or use the booking form on this page."
+        }
+      }
+    ]
   }
   </script>
 
@@ -109,6 +163,7 @@
     }
     .btn:hover  { transform: translateY(-2px); }
     .btn:active { transform: translateY(0); }
+    .btn:focus-visible { outline: 2px solid var(--rose); outline-offset: 3px; }
     .btn-rose {
       background: var(--rose);
       color: var(--base);
@@ -433,20 +488,18 @@
       border-color: var(--rose); color: #fce8f0; background: rgba(194,104,142,0.12);
     }
     .hero-meta {
-      margin-top: 48px;
-      display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      margin-top: 20px;
       animation: fadeUp 0.7s var(--spring) 1s both;
     }
     .hero-meta-item {
-      font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 500;
-      letter-spacing: 0.18em; text-transform: uppercase;
-      color: rgba(252,232,240,0.4);
-      display: flex; align-items: center; gap: 8px;
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 400; color: rgba(252,232,240,0.7);
+      letter-spacing: 0.04em;
     }
-    .hero-meta-dot {
-      width: 4px; height: 4px; border-radius: 50%;
-      background: rgba(194,104,142,0.5); flex-shrink: 0;
-    }
+    .hero-meta-stars { color: var(--gold); font-size: 13px; letter-spacing: 2px; }
+    .hero-meta-label { color: rgba(252,232,240,0.85); font-weight: 500; }
+    .hero-meta-sep { color: rgba(252,232,240,0.3); font-size: 10px; }
     .hero-scroll {
       position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
       z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 8px;
@@ -1318,6 +1371,94 @@
       transition: color 0.2s;
     }
     .ls-skip:hover { color: rgba(252,232,240,0.55); }
+
+    /* ── Exit Intent Modal ── */
+    #exit-modal {
+      display: none; position: fixed; inset: 0; z-index: 10000;
+      background: rgba(19,10,16,0.7); backdrop-filter: blur(6px);
+      align-items: center; justify-content: center; padding: 24px;
+    }
+    #exit-modal.open { display: flex; }
+    .exit-modal-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 48px 40px; max-width: 440px; width: 100%;
+      text-align: center; position: relative;
+      box-shadow: 0 8px 64px rgba(194,104,142,0.18), 0 2px 16px rgba(19,10,16,0.3);
+    }
+    .exit-modal-close {
+      position: absolute; top: 16px; right: 16px; background: none; border: none;
+      cursor: pointer; color: var(--muted); font-size: 20px; line-height: 1;
+      padding: 4px 8px;
+    }
+    .exit-modal-close:hover { color: var(--rose); }
+    .exit-modal-offer {
+      display: inline-block; background: var(--floating); color: var(--rose);
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 6px 16px; border-radius: 100px; margin-bottom: 20px;
+    }
+    .exit-modal-title {
+      font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700;
+      color: var(--plum); line-height: 1.2; margin-bottom: 12px;
+    }
+    .exit-modal-sub {
+      font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 28px;
+    }
+    .exit-modal-form { display: flex; gap: 8px; }
+    .exit-modal-input {
+      flex: 1; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px;
+      font-size: 14px; font-family: 'DM Sans', sans-serif; background: #fff;
+      color: var(--text);
+    }
+    .exit-modal-input:focus { outline: 2px solid var(--rose); outline-offset: 0; }
+    .exit-modal-btn {
+      padding: 12px 20px; background: var(--rose); color: #fff; border: none;
+      border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s var(--ease), transform 0.15s var(--spring);
+    }
+    .exit-modal-btn:hover { background: #a8567a; transform: translateY(-1px); }
+    .exit-modal-dismiss {
+      display: block; margin-top: 16px; font-size: 12px; color: var(--muted);
+      cursor: pointer; background: none; border: none; text-decoration: underline;
+    }
+
+    /* ── Email Capture ── */
+    #email-capture {
+      padding: 80px 40px; background: var(--elevated);
+      border-top: 1px solid var(--border);
+    }
+    .ec-inner {
+      max-width: 560px; margin: 0 auto; text-align: center;
+    }
+    .ec-label {
+      display: inline-block; background: var(--floating); color: var(--rose);
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 6px 16px; border-radius: 100px; margin-bottom: 20px;
+    }
+    .ec-title {
+      font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700;
+      color: var(--plum); line-height: 1.25; margin-bottom: 12px;
+    }
+    .ec-sub {
+      font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 32px;
+    }
+    .ec-form { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .ec-input {
+      flex: 1; min-width: 220px; padding: 14px 18px;
+      border: 1px solid var(--border); border-radius: 10px;
+      font-size: 14px; font-family: 'DM Sans', sans-serif;
+      background: #fff; color: var(--text);
+    }
+    .ec-input:focus { outline: 2px solid var(--rose); outline-offset: 0; }
+    .ec-btn {
+      padding: 14px 28px; background: var(--rose); color: #fff; border: none;
+      border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer;
+      transition: background 0.2s var(--ease), transform 0.15s var(--spring);
+    }
+    .ec-btn:hover { background: #a8567a; transform: translateY(-2px); }
+    .ec-fine {
+      margin-top: 14px; font-size: 11px; color: var(--muted);
+    }
   </style>
 </head>
 <body>
@@ -1356,7 +1497,7 @@
       <div class="ls-step active" id="lss1">
         <p class="ls-eyebrow">✦ Quick setup</p>
         <p class="ls-q">What's your name?</p>
-        <input type="text" class="ls-name-input" id="lsName" placeholder="Your first name…" maxlength="30" autocomplete="given-name">
+        <input type="text" class="ls-name-input" id="lsName" placeholder="Your first name…" maxlength="30" autocomplete="given-name" aria-label="Your first name">
         <div class="ls-btn-row">
           <button class="ls-next" id="lsNext1" onclick="lsGo(2)" disabled>Continue →</button>
         </div>
@@ -1386,7 +1527,7 @@
       <div class="ls-step" id="lss3">
         <p class="ls-eyebrow">✦ Last step</p>
         <p class="ls-q">When was your last visit?</p>
-        <input type="date" class="ls-date-input" id="lsDate" onchange="lsUpdatePreview()">
+        <input type="date" class="ls-date-input" id="lsDate" onchange="lsUpdatePreview()" aria-label="Date of last visit">
         <div class="ls-preview" id="lsPreview">Pick a date and we'll show your personal reminder.</div>
         <div class="ls-btn-row">
           <button class="ls-back" onclick="lsGo(2)">← Back</button>
@@ -1537,9 +1678,9 @@
             <p class="hb-label">✦ Book with Louise</p>
             <p class="hb-title">Request an appointment</p>
             <form class="hb-form" onsubmit="return hbSubmit(event)">
-              <input type="text" class="hb-input" id="hbName" placeholder="Your name" required>
-              <input type="tel" class="hb-input" id="hbPhone" placeholder="Your WhatsApp number">
-              <select class="hb-input" id="hbService">
+              <input type="text" class="hb-input" id="hbName" placeholder="Your name" required aria-label="Your name">
+              <input type="tel" class="hb-input" id="hbPhone" placeholder="Your WhatsApp number" aria-label="Your WhatsApp number">
+              <select class="hb-input" id="hbService" aria-label="Choose a service">
                 <option value="">Choose a service…</option>
                 <option>Korean Lash Lift</option>
                 <option>LVL Lashes</option>
@@ -1550,8 +1691,8 @@
                 <option>Mega Volume</option>
                 <option>Infills</option>
               </select>
-              <input type="date" class="hb-input" id="hbDate">
-              <textarea class="hb-input" id="hbNote" placeholder="Any notes? (optional)" rows="2" style="resize:none;"></textarea>
+              <input type="date" class="hb-input" id="hbDate" aria-label="Preferred appointment date">
+              <textarea class="hb-input" id="hbNote" placeholder="Any notes? (optional)" rows="2" style="resize:none;" aria-label="Additional notes"></textarea>
               <button type="submit" class="btn btn-rose hb-submit">Send via WhatsApp 💕</button>
             </form>
           </div>
@@ -1590,9 +1731,14 @@
           <a href="marketplace.html" class="btn btn-outline" style="border-color:rgba(201,149,106,0.3);color:var(--gold);background:rgba(201,149,106,0.06);" aria-label="Visit the shop">🛍 Shop</a>
         </div>
         <div class="hero-meta">
-          <span class="hero-meta-item"><span class="hero-meta-dot"></span>100+ Happy Clients</span>
-          <span class="hero-meta-item"><span class="hero-meta-dot"></span>5★ Rated</span>
-          <span class="hero-meta-item"><span class="hero-meta-dot"></span>Fully Insured</span>
+          <span class="hero-meta-item">
+            <span class="hero-meta-stars" aria-label="5 stars">★★★★★</span>
+            <span class="hero-meta-label">5.0 · 100+ clients</span>
+          </span>
+          <span class="hero-meta-sep" aria-hidden="true">·</span>
+          <span class="hero-meta-item">Fully Insured</span>
+          <span class="hero-meta-sep" aria-hidden="true">·</span>
+          <span class="hero-meta-item">Longtown, Cumbria</span>
         </div>
       </div>
       <div class="hero-scroll" aria-hidden="true">
@@ -2055,6 +2201,20 @@
             <span class="club-shop-banner-arrow">→</span>
           </div>
         </a>
+      </div>
+    </section>
+
+    <!-- ── Email Capture ── -->
+    <section id="email-capture" aria-label="Join the newsletter">
+      <div class="ec-inner reveal">
+        <span class="ec-label">✦ Free Guide</span>
+        <h2 class="ec-title">Keep your lashes<br><em>looking flawless</em></h2>
+        <p class="ec-sub">Get our free lash aftercare guide — everything you need to know to make your extensions last longer. Straight to your inbox.</p>
+        <form class="ec-form" onsubmit="submitEmailCapture(event)">
+          <input class="ec-input" type="email" placeholder="your@email.com" required aria-label="Your email address">
+          <button class="ec-btn" type="submit">Send me the guide ✦</button>
+        </form>
+        <p class="ec-fine">No spam. Unsubscribe any time.</p>
       </div>
     </section>
 
@@ -2523,6 +2683,58 @@
       ['qStep1','qStep2','qStep3','qResult'].forEach(id => {
         document.getElementById(id).style.display = id==='qStep1' ? 'block' : 'none';
       });
+    }
+
+    // Exit intent
+    (function() {
+      let shown = false;
+      function showExitModal() {
+        if (shown || sessionStorage.getItem('exitDismissed')) return;
+        shown = true;
+        document.getElementById('exit-modal').classList.add('open');
+      }
+      function closeExitModal() {
+        document.getElementById('exit-modal').classList.remove('open');
+        sessionStorage.setItem('exitDismissed', '1');
+      }
+      function submitExitForm(e) {
+        e.preventDefault();
+        closeExitModal();
+      }
+      document.addEventListener('mouseleave', function(e) {
+        if (e.clientY <= 0) showExitModal();
+      });
+      window.closeExitModal = closeExitModal;
+      window.submitExitForm = submitExitForm;
+    })();
+
+    function submitEmailCapture(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('.ec-btn');
+      btn.textContent = '✓ On its way!';
+      btn.style.background = '#4caf50';
+      btn.disabled = true;
+    }
+  </script>
+
+  <!-- ── Exit Intent Modal ── -->
+  <div id="exit-modal" role="dialog" aria-modal="true" aria-labelledby="exit-modal-title">
+    <div class="exit-modal-box">
+      <button class="exit-modal-close" onclick="closeExitModal()" aria-label="Close">✕</button>
+      <span class="exit-modal-offer">✦ Before you go</span>
+      <h2 class="exit-modal-title" id="exit-modal-title">Grab 10% off<br>your first booking</h2>
+      <p class="exit-modal-sub">Drop your email and Louise will send your discount code. No spam — just lashes.</p>
+      <form class="exit-modal-form" onsubmit="submitExitForm(event)">
+        <input class="exit-modal-input" type="email" placeholder="your@email.com" required aria-label="Email address">
+        <button class="exit-modal-btn" type="submit">Claim it</button>
+      </form>
+      <button class="exit-modal-dismiss" onclick="closeExitModal()">No thanks, I'll pay full price</button>
+    </div>
+  </div>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
     }
   </script>
 

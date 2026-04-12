@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dolled by Louise</title>
   <meta name="description" content="Dolled by Louise — Lash Artist in Longtown, Cumbria.">
+  <meta property="og:title" content="Dolled by Louise — Lash Artist in Longtown, Cumbria">
+  <meta property="og:description" content="Expert lash lifts and extensions. Book with Louise today.">
+  <meta property="og:image" content="https://placehold.co/1200x630/130a10/c2688e?text=Dolled+by+Louise">
+  <meta property="og:url" content="https://dolledbylouise.co.uk/welcome.html">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#130a10">
+  <link rel="manifest" href="/manifest.json">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -202,6 +209,7 @@
     .enter-btn:hover { color: #fff; border-color: rgba(194,104,142,0.8); }
     .enter-btn:hover::before { opacity: 1; }
     .enter-btn:active { transform: scale(0.98); }
+    .enter-btn:focus-visible { outline: 2px solid var(--rose); outline-offset: 3px; }
 
     /* Animated shimmer fill on hover */
     .enter-btn::after {
@@ -374,6 +382,12 @@
     // ── Skip if already visited this session ──
     if (sessionStorage.getItem('dbl_entered')) {
       window.location.replace('index.html');
+    }
+  </script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(function() {});
     }
   </script>
 </body>

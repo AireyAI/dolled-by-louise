@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shop — Dolled by Louise</title>
   <meta name="description" content="Lash aftercare products, kits, and accessories from Dolled by Louise. Keep your lashes looking flawless between appointments.">
+  <meta property="og:title" content="Shop — Dolled by Louise">
+  <meta property="og:description" content="Lash aftercare products and kits from Dolled by Louise.">
+  <meta property="og:image" content="https://placehold.co/1200x630/fdf8f5/c2688e?text=Dolled+by+Louise+Shop">
+  <meta property="og:url" content="https://dolledbylouise.co.uk/marketplace.html">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#fdf8f5">
+  <link rel="canonical" href="https://dolledbylouise.co.uk/marketplace.html">
+  <link rel="manifest" href="/manifest.json">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -238,17 +246,20 @@
       border-radius: 16px;
       overflow: hidden;
       display: flex; flex-direction: column;
-      transition: transform 0.3s var(--spring), box-shadow 0.3s var(--ease), border-color 0.3s;
+      transition: transform 0.25s var(--spring), box-shadow 0.25s var(--ease);
       box-shadow:
         0 2px 4px rgba(194,104,142,0.04),
         0 8px 24px rgba(194,104,142,0.09);
     }
     .prod-card:hover {
-      transform: translateY(-6px);
-      border-color: rgba(194,104,142,0.35);
-      box-shadow:
-        0 4px 8px rgba(194,104,142,0.06),
-        0 20px 48px rgba(194,104,142,0.18);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(194,104,142,0.18), 0 4px 12px rgba(19,10,16,0.12);
+    }
+    .prod-card img {
+      transition: transform 0.4s var(--ease);
+    }
+    .prod-card:hover img {
+      transform: scale(1.04);
     }
     .prod-img-wrap {
       position: relative;
@@ -260,9 +271,7 @@
       position: absolute; inset: 0;
       width: 100%; height: 100%;
       object-fit: cover;
-      transition: transform 0.5s var(--ease);
     }
-    .prod-card:hover .prod-img-wrap img { transform: scale(1.04); }
 
     /* Gradient overlay on image */
     .prod-img-wrap::after {
@@ -326,6 +335,12 @@
     }
     .prod-enquire:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(194,104,142,0.45); }
     .prod-enquire:active { transform: translateY(0); }
+
+    .prod-scarcity {
+      display: inline-block; background: #fff3e0; color: #e65100;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.05em;
+      padding: 4px 10px; border-radius: 100px; margin-bottom: 8px;
+    }
 
     /* ── Hidden product (filtered out) ── */
     .prod-card.hidden { display: none; }
@@ -395,6 +410,11 @@
     .modal-divider {
       height: 1px; background: var(--border); margin: 0 0 20px;
     }
+    .shipping-bar-wrap { background: var(--elevated); border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; }
+    .shipping-bar-label { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+    .shipping-bar-label strong { color: var(--rose); }
+    .shipping-bar-track { height: 6px; background: var(--border); border-radius: 100px; overflow: hidden; }
+    .shipping-bar-fill { height: 100%; background: linear-gradient(90deg, var(--rose), var(--gold)); border-radius: 100px; transition: width 0.4s var(--ease); }
     .modal-pay-lbl {
       font-size: 10px; font-weight: 500; letter-spacing: 0.22em;
       text-transform: uppercase; color: var(--muted); margin-bottom: 14px;
@@ -442,6 +462,64 @@
       transition: border-color 0.2s, color 0.2s, background 0.2s;
     }
     .pay-wa:hover { border-color: var(--rose); color: var(--rose); background: var(--blush); }
+
+    /* ── Wishlist button ── */
+    .wish-btn {
+      position: absolute; top: 12px; right: 12px;
+      background: rgba(255,255,255,0.9); border: none; border-radius: 50%;
+      width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 16px; z-index: 2;
+      box-shadow: 0 2px 8px rgba(19,10,16,0.12);
+      transition: transform 0.15s var(--spring), background 0.15s var(--ease);
+    }
+    .wish-btn:hover { transform: scale(1.15); }
+    .wish-btn.active { background: var(--floating); }
+    .wish-btn.active .wish-icon::before { content: '♥'; color: var(--rose); }
+    .wish-btn:not(.active) .wish-icon::before { content: '♡'; color: var(--muted); }
+
+    /* ── Quick View Modal ── */
+    #quick-view-modal {
+      display: none; position: fixed; inset: 0; z-index: 10001;
+      background: rgba(19,10,16,0.7); backdrop-filter: blur(6px);
+      align-items: center; justify-content: center; padding: 24px;
+    }
+    #quick-view-modal.open { display: flex; }
+    .qv-box {
+      background: var(--surface); border-radius: 16px; max-width: 600px; width: 100%;
+      display: grid; grid-template-columns: 1fr 1fr; overflow: hidden;
+      box-shadow: 0 8px 64px rgba(19,10,16,0.3);
+    }
+    .qv-img-wrap { aspect-ratio: 1; overflow: hidden; }
+    .qv-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+    .qv-body { padding: 32px; display: flex; flex-direction: column; gap: 12px; }
+    .qv-cat { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--rose); }
+    .qv-name { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--plum); }
+    .qv-price { font-size: 20px; font-weight: 600; color: var(--rose); }
+    .qv-desc { font-size: 13px; color: var(--muted); line-height: 1.7; flex: 1; }
+    .qv-btn {
+      padding: 14px; background: var(--rose); color: #fff; border: none;
+      border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer;
+      transition: background 0.2s var(--ease);
+    }
+    .qv-btn:hover { background: #a8567a; }
+    .qv-close {
+      position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.9);
+      border: none; border-radius: 50%; width: 36px; height: 36px;
+      cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center;
+    }
+    @media (max-width: 540px) {
+      .qv-box { grid-template-columns: 1fr; }
+      .qv-img-wrap { max-height: 200px; }
+    }
+
+    /* ── Modal also-like row ── */
+    .modal-also-like { margin-top: 20px; border-top: 1px solid var(--border); padding-top: 16px; }
+    .modal-also-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+    .modal-also-row { display: flex; gap: 10px; overflow-x: auto; }
+    .modal-also-item { flex: 0 0 80px; cursor: pointer; text-align: center; }
+    .modal-also-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); }
+    .modal-also-item p { font-size: 11px; color: var(--muted); margin-top: 4px; line-height: 1.3; }
+    .modal-also-item:hover img { border-color: var(--rose); }
 
     /* ── Banner strip ── */
     #shop-banner {
@@ -740,8 +818,11 @@
 
         <!-- Lash Aftercare Kit -->
         <div class="prod-card reveal" data-cat="kits" style="transition-delay:.05s">
-          <div class="prod-img-wrap">
-            <img src="https://placehold.co/500x500/fce8f0/c97fa0?text=Aftercare+Kit" alt="Lash Aftercare Starter Kit" loading="lazy">
+          <div class="prod-img-wrap" style="position:relative">
+            <img src="https://placehold.co/500x500/fce8f0/c97fa0?text=Aftercare+Kit" alt="Lash Aftercare Starter Kit" loading="lazy" style="cursor:pointer" onclick="openQuickView('Lash Aftercare Starter Kit','Kits &amp; Bundles','£24.99','https://placehold.co/500x500/fce8f0/c97fa0?text=Aftercare+Kit','STRIPE_LINK_1','PAYPAL_LINK_1','Hi%20Louise!%20I%27d%20love%20to%20order%20the%20Lash%20Aftercare%20Starter%20Kit%20%F0%9F%92%95')">
+            <button class="wish-btn" onclick="toggleWish(this, 'Lash Aftercare Starter Kit')" aria-label="Save to wishlist">
+              <span class="wish-icon"></span>
+            </button>
             <span class="prod-badge prod-badge-bundle">Bundle</span>
           </div>
           <div class="prod-body">
@@ -757,8 +838,11 @@
 
         <!-- Lash Foam Cleanser -->
         <div class="prod-card reveal" data-cat="aftercare" style="transition-delay:.1s">
-          <div class="prod-img-wrap">
-            <img src="https://placehold.co/500x500/fff0f6/c97fa0?text=Foam+Cleanser" alt="Lash Extension Foam Cleanser" loading="lazy">
+          <div class="prod-img-wrap" style="position:relative">
+            <img src="https://placehold.co/500x500/fff0f6/c97fa0?text=Foam+Cleanser" alt="Lash Extension Foam Cleanser" loading="lazy" style="cursor:pointer" onclick="openQuickView('Lash Extension Foam Cleanser','Aftercare','£9.99','https://placehold.co/500x500/fff0f6/c97fa0?text=Foam+Cleanser','STRIPE_LINK_2','PAYPAL_LINK_2','Hi%20Louise!%20I%27d%20love%20to%20order%20the%20Lash%20Foam%20Cleanser%20%F0%9F%92%95')">
+            <button class="wish-btn" onclick="toggleWish(this, 'Lash Extension Foam Cleanser')" aria-label="Save to wishlist">
+              <span class="wish-icon"></span>
+            </button>
             <span class="prod-badge prod-badge-popular">Most popular</span>
           </div>
           <div class="prod-body">
@@ -774,12 +858,16 @@
 
         <!-- Lash Serum -->
         <div class="prod-card reveal" data-cat="aftercare" style="transition-delay:.15s">
-          <div class="prod-img-wrap">
-            <img src="https://placehold.co/500x500/fdf8f5/c97fa0?text=Lash+Serum" alt="Lash Conditioning Serum" loading="lazy">
+          <div class="prod-img-wrap" style="position:relative">
+            <img src="https://placehold.co/500x500/fdf8f5/c97fa0?text=Lash+Serum" alt="Lash Conditioning Serum" loading="lazy" style="cursor:pointer" onclick="openQuickView('Lash Conditioning Serum','Aftercare','£14.99','https://placehold.co/500x500/fdf8f5/c97fa0?text=Lash+Serum','STRIPE_LINK_3','PAYPAL_LINK_3','Hi%20Louise!%20I%27d%20love%20to%20order%20the%20Lash%20Conditioning%20Serum%20%F0%9F%92%95')">
+            <button class="wish-btn" onclick="toggleWish(this, 'Lash Conditioning Serum')" aria-label="Save to wishlist">
+              <span class="wish-icon"></span>
+            </button>
             <span class="prod-badge prod-badge-new">New</span>
           </div>
           <div class="prod-body">
             <p class="prod-cat">Aftercare</p>
+            <span class="prod-scarcity">⚡ Only 5 left</span>
             <p class="prod-name">Lash Conditioning Serum</p>
             <p class="prod-desc">Nourishing serum packed with peptides and biotin to strengthen your natural lashes and promote healthy growth underneath your extensions.</p>
             <div class="prod-footer">
@@ -791,8 +879,11 @@
 
         <!-- Spoolie Set -->
         <div class="prod-card reveal" data-cat="accessories" style="transition-delay:.2s">
-          <div class="prod-img-wrap">
-            <img src="https://placehold.co/500x500/fce8f0/c97fa0?text=Spoolie+Set" alt="Lash Spoolie Brush Set" loading="lazy">
+          <div class="prod-img-wrap" style="position:relative">
+            <img src="https://placehold.co/500x500/fce8f0/c97fa0?text=Spoolie+Set" alt="Lash Spoolie Brush Set" loading="lazy" style="cursor:pointer" onclick="openQuickView('Spoolie Brush Set','Accessories','£5.99','https://placehold.co/500x500/fce8f0/c97fa0?text=Spoolie+Set','STRIPE_LINK_4','PAYPAL_LINK_4','Hi%20Louise!%20I%27d%20love%20to%20order%20the%20Spoolie%20Brush%20Set%20%F0%9F%92%95')">
+            <button class="wish-btn" onclick="toggleWish(this, 'Spoolie Brush Set')" aria-label="Save to wishlist">
+              <span class="wish-icon"></span>
+            </button>
           </div>
           <div class="prod-body">
             <p class="prod-cat">Accessories</p>
@@ -807,8 +898,11 @@
 
         <!-- Lash Pillow -->
         <div class="prod-card reveal" data-cat="accessories" style="transition-delay:.25s">
-          <div class="prod-img-wrap">
-            <img src="https://placehold.co/500x500/fff0f6/c97fa0?text=Lash+Pillow" alt="Lash Extension Silk Pillow" loading="lazy">
+          <div class="prod-img-wrap" style="position:relative">
+            <img src="https://placehold.co/500x500/fff0f6/c97fa0?text=Lash+Pillow" alt="Lash Extension Silk Pillow" loading="lazy" style="cursor:pointer" onclick="openQuickView('Silk Lash Pillowcase','Accessories','£19.99','https://placehold.co/500x500/fff0f6/c97fa0?text=Lash+Pillow','STRIPE_LINK_5','PAYPAL_LINK_5','Hi%20Louise!%20I%27d%20love%20to%20order%20the%20Silk%20Lash%20Pillowcase%20%F0%9F%92%95')">
+            <button class="wish-btn" onclick="toggleWish(this, 'Silk Lash Pillowcase')" aria-label="Save to wishlist">
+              <span class="wish-icon"></span>
+            </button>
           </div>
           <div class="prod-body">
             <p class="prod-cat">Accessories</p>
@@ -823,12 +917,16 @@
 
         <!-- Luxury Bundle -->
         <div class="prod-card reveal" data-cat="kits" style="transition-delay:.3s">
-          <div class="prod-img-wrap">
-            <img src="https://placehold.co/500x500/fce8f0/c97fa0?text=Luxury+Bundle" alt="Luxury Lash Bundle" loading="lazy">
+          <div class="prod-img-wrap" style="position:relative">
+            <img src="https://placehold.co/500x500/fce8f0/c97fa0?text=Luxury+Bundle" alt="Luxury Lash Bundle" loading="lazy" style="cursor:pointer" onclick="openQuickView('The Luxury Lash Bundle','Kits &amp; Bundles','£44.99','https://placehold.co/500x500/fce8f0/c97fa0?text=Luxury+Bundle','STRIPE_LINK_6','PAYPAL_LINK_6','Hi%20Louise!%20I%27d%20love%20to%20order%20the%20Luxury%20Lash%20Bundle%20%F0%9F%92%95')">
+            <button class="wish-btn" onclick="toggleWish(this, 'The Luxury Lash Bundle')" aria-label="Save to wishlist">
+              <span class="wish-icon"></span>
+            </button>
             <span class="prod-badge prod-badge-bundle">Bundle</span>
           </div>
           <div class="prod-body">
             <p class="prod-cat">Kits &amp; Bundles</p>
+            <span class="prod-scarcity">⚡ Only 3 left</span>
             <p class="prod-name">The Luxury Lash Bundle</p>
             <p class="prod-desc">The full works — foam cleanser, conditioning serum, spoolie set, silk pillowcase, and a handwritten aftercare card from Louise. Perfect as a gift.</p>
             <div class="prod-footer">
@@ -840,8 +938,11 @@
 
         <!-- Lash Remover -->
         <div class="prod-card reveal" data-cat="aftercare" style="transition-delay:.35s">
-          <div class="prod-img-wrap">
-            <img src="https://placehold.co/500x500/fdf8f5/c97fa0?text=Lash+Remover" alt="Gentle Lash Remover" loading="lazy">
+          <div class="prod-img-wrap" style="position:relative">
+            <img src="https://placehold.co/500x500/fdf8f5/c97fa0?text=Lash+Remover" alt="Gentle Lash Remover" loading="lazy" style="cursor:pointer" onclick="openQuickView('Gentle Lash Remover','Aftercare','£11.99','https://placehold.co/500x500/fdf8f5/c97fa0?text=Lash+Remover','STRIPE_LINK_7','PAYPAL_LINK_7','Hi%20Louise!%20I%27d%20love%20to%20order%20the%20Gentle%20Lash%20Remover%20%F0%9F%92%95')">
+            <button class="wish-btn" onclick="toggleWish(this, 'Gentle Lash Remover')" aria-label="Save to wishlist">
+              <span class="wish-icon"></span>
+            </button>
           </div>
           <div class="prod-body">
             <p class="prod-cat">Aftercare</p>
@@ -856,8 +957,11 @@
 
         <!-- Gift Card -->
         <div class="prod-card reveal" data-cat="gift" style="transition-delay:.4s">
-          <div class="prod-img-wrap">
-            <img src="https://placehold.co/500x500/fce8f0/c97fa0?text=Gift+Card" alt="Dolled by Louise Gift Card" loading="lazy">
+          <div class="prod-img-wrap" style="position:relative">
+            <img src="https://placehold.co/500x500/fce8f0/c97fa0?text=Gift+Card" alt="Dolled by Louise Gift Card" loading="lazy" style="cursor:pointer" onclick="openQuickView('Experience Gift Card','Gift Cards','From £25','https://placehold.co/500x500/fce8f0/c97fa0?text=Gift+Card','STRIPE_LINK_8','PAYPAL_LINK_8','Hi%20Louise!%20I%27d%20love%20to%20order%20a%20Gift%20Card%20%F0%9F%92%95')">
+            <button class="wish-btn" onclick="toggleWish(this, 'Experience Gift Card')" aria-label="Save to wishlist">
+              <span class="wish-icon"></span>
+            </button>
             <span class="prod-badge prod-badge-new">Popular gift</span>
           </div>
           <div class="prod-body">
@@ -874,6 +978,21 @@
       </div>
     </section>
 
+    <!-- ── QUICK VIEW MODAL ── -->
+    <div id="quick-view-modal" role="dialog" aria-modal="true" style="position:relative">
+      <div class="qv-box">
+        <div class="qv-img-wrap"><img id="qv-img" src="" alt=""></div>
+        <div class="qv-body">
+          <p class="qv-cat" id="qv-cat"></p>
+          <h2 class="qv-name" id="qv-name"></h2>
+          <p class="qv-price" id="qv-price"></p>
+          <p class="qv-desc" id="qv-desc">Premium lash aftercare product. Formulated to extend the life of your extensions and keep lashes healthy between appointments.</p>
+          <button class="qv-btn" id="qv-buy-btn">Buy Now ✦</button>
+        </div>
+      </div>
+      <button class="qv-close" onclick="closeQuickView()" aria-label="Close quick view">✕</button>
+    </div>
+
     <!-- ── CHECKOUT MODAL ── -->
     <div id="checkout-modal" role="dialog" aria-modal="true" aria-labelledby="modal-product-name">
       <div class="modal-backdrop" onclick="closeCheckout()"></div>
@@ -883,6 +1002,12 @@
         <p class="modal-cat" id="modal-cat"></p>
         <p class="modal-name" id="modal-product-name"></p>
         <p class="modal-price" id="modal-price"></p>
+        <div class="shipping-bar-wrap" id="shipping-bar-wrap">
+          <p class="shipping-bar-label" id="shipping-bar-label">Add <strong id="shipping-remaining">£XX</strong> more for free delivery</p>
+          <div class="shipping-bar-track">
+            <div class="shipping-bar-fill" id="shipping-bar-fill" style="width:0%"></div>
+          </div>
+        </div>
         <div class="modal-divider"></div>
         <p class="modal-pay-lbl">Choose how to pay</p>
         <div class="modal-pay-options">
@@ -898,6 +1023,10 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
             Or order via WhatsApp
           </a>
+        </div>
+        <div class="modal-also-like" id="modal-also-like">
+          <p class="modal-also-label">You might also like</p>
+          <div class="modal-also-row" id="modal-also-row"></div>
         </div>
       </div>
     </div>
@@ -1080,6 +1209,17 @@
       document.getElementById('modal-stripe').href = STRIPE_LINKS[stripeKey] || '#';
       document.getElementById('modal-paypal').href = PAYPAL_LINKS[paypalKey] || '#';
       document.getElementById('modal-wa').href = `https://wa.me/447464557236?text=${waText}`;
+      // Shipping bar
+      const FREE_THRESHOLD = 30;
+      const numericPrice = parseFloat((price || '').replace(/[^0-9.]/g, '')) || 0;
+      const remaining = Math.max(0, FREE_THRESHOLD - numericPrice);
+      const pct = Math.min(100, (numericPrice / FREE_THRESHOLD) * 100);
+      document.getElementById('shipping-bar-fill').style.width = pct + '%';
+      if (remaining <= 0) {
+        document.getElementById('shipping-bar-label').innerHTML = '✓ <strong>Free delivery included!</strong>';
+      } else {
+        document.getElementById('shipping-bar-label').innerHTML = 'Add <strong>£' + remaining.toFixed(2) + '</strong> more for free delivery';
+      }
       document.getElementById('checkout-modal').classList.add('open');
       document.body.style.overflow = 'hidden';
     }
@@ -1089,8 +1229,84 @@
       document.body.style.overflow = '';
     }
 
+    // ── Wishlist functions ──
+    function toggleWish(btn, productName) {
+      const wishes = JSON.parse(localStorage.getItem('wishlist') || '[]');
+      const idx = wishes.indexOf(productName);
+      if (idx === -1) {
+        wishes.push(productName);
+        btn.classList.add('active');
+        btn.setAttribute('aria-label', 'Remove from wishlist');
+      } else {
+        wishes.splice(idx, 1);
+        btn.classList.remove('active');
+        btn.setAttribute('aria-label', 'Save to wishlist');
+      }
+      localStorage.setItem('wishlist', JSON.stringify(wishes));
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const wishes = JSON.parse(localStorage.getItem('wishlist') || '[]');
+      document.querySelectorAll('.wish-btn').forEach(function(btn) {
+        var onclick = btn.getAttribute('onclick') || '';
+        var match = onclick.match(/'([^']+)'\s*\)/);
+        if (match && wishes.indexOf(match[1]) !== -1) btn.classList.add('active');
+      });
+    });
+
+    // ── Quick View functions ──
+    function openQuickView(name, cat, price, img, stripeLink, paypalLink, waMsg) {
+      document.getElementById('qv-img').src = img;
+      document.getElementById('qv-img').alt = name;
+      document.getElementById('qv-name').textContent = name;
+      document.getElementById('qv-cat').textContent = cat;
+      document.getElementById('qv-price').textContent = price;
+      document.getElementById('qv-buy-btn').onclick = function() {
+        closeQuickView();
+        openCheckout(name, cat, price, img, stripeLink, paypalLink, waMsg);
+      };
+      document.getElementById('quick-view-modal').classList.add('open');
+    }
+    function closeQuickView() {
+      document.getElementById('quick-view-modal').classList.remove('open');
+    }
+    document.getElementById('quick-view-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeQuickView();
+    });
+
+    // ── Products array for "You might also like" ──
+    const PRODUCTS = [
+      { name: 'Lash Aftercare Starter Kit', cat: 'Kits &amp; Bundles', price: '£24.99', img: 'https://placehold.co/500x500/fce8f0/c97fa0?text=Aftercare+Kit', stripe: 'STRIPE_LINK_1', paypal: 'PAYPAL_LINK_1', wa: 'Hi%20Louise!%20I%27d%20love%20to%20order%20the%20Lash%20Aftercare%20Starter%20Kit%20%F0%9F%92%95' },
+      { name: 'Lash Extension Foam Cleanser', cat: 'Aftercare', price: '£9.99', img: 'https://placehold.co/500x500/fff0f6/c97fa0?text=Foam+Cleanser', stripe: 'STRIPE_LINK_2', paypal: 'PAYPAL_LINK_2', wa: 'Hi%20Louise!%20I%27d%20love%20to%20order%20the%20Lash%20Foam%20Cleanser%20%F0%9F%92%95' },
+      { name: 'Lash Conditioning Serum', cat: 'Aftercare', price: '£14.99', img: 'https://placehold.co/500x500/fdf8f5/c97fa0?text=Lash+Serum', stripe: 'STRIPE_LINK_3', paypal: 'PAYPAL_LINK_3', wa: 'Hi%20Louise!%20I%27d%20love%20to%20order%20the%20Lash%20Conditioning%20Serum%20%F0%9F%92%95' },
+      { name: 'Spoolie Brush Set', cat: 'Accessories', price: '£5.99', img: 'https://placehold.co/500x500/fce8f0/c97fa0?text=Spoolie+Set', stripe: 'STRIPE_LINK_4', paypal: 'PAYPAL_LINK_4', wa: 'Hi%20Louise!%20I%27d%20love%20to%20order%20the%20Spoolie%20Brush%20Set%20%F0%9F%92%95' },
+      { name: 'Silk Lash Pillowcase', cat: 'Accessories', price: '£19.99', img: 'https://placehold.co/500x500/fff0f6/c97fa0?text=Lash+Pillow', stripe: 'STRIPE_LINK_5', paypal: 'PAYPAL_LINK_5', wa: 'Hi%20Louise!%20I%27d%20love%20to%20order%20the%20Silk%20Lash%20Pillowcase%20%F0%9F%92%95' },
+      { name: 'The Luxury Lash Bundle', cat: 'Kits &amp; Bundles', price: '£44.99', img: 'https://placehold.co/500x500/fce8f0/c97fa0?text=Luxury+Bundle', stripe: 'STRIPE_LINK_6', paypal: 'PAYPAL_LINK_6', wa: 'Hi%20Louise!%20I%27d%20love%20to%20order%20the%20Luxury%20Lash%20Bundle%20%F0%9F%92%95' },
+      { name: 'Gentle Lash Remover', cat: 'Aftercare', price: '£11.99', img: 'https://placehold.co/500x500/fdf8f5/c97fa0?text=Lash+Remover', stripe: 'STRIPE_LINK_7', paypal: 'PAYPAL_LINK_7', wa: 'Hi%20Louise!%20I%27d%20love%20to%20order%20the%20Gentle%20Lash%20Remover%20%F0%9F%92%95' },
+      { name: 'Experience Gift Card', cat: 'Gift Cards', price: 'From £25', img: 'https://placehold.co/500x500/fce8f0/c97fa0?text=Gift+Card', stripe: 'STRIPE_LINK_8', paypal: 'PAYPAL_LINK_8', wa: 'Hi%20Louise!%20I%27d%20love%20to%20order%20a%20Gift%20Card%20%F0%9F%92%95' }
+    ];
+
+    // Update openCheckout to include "You might also like"
+    const originalOpenCheckout = window.openCheckout;
+    window.openCheckout = function(name, cat, price, img, stripeKey, paypalKey, waText) {
+      originalOpenCheckout(name, cat, price, img, stripeKey, paypalKey, waText);
+      // "You might also like"
+      var related = PRODUCTS.filter(function(p) { return p.cat === cat && p.name !== name; }).slice(0, 3);
+      var row = document.getElementById('modal-also-row');
+      row.innerHTML = related.map(function(p) {
+        return '<div class="modal-also-item" onclick="closeCheckout(); openCheckout(\'' + p.name.replace(/'/g, "\\'") + '\',\'' + p.cat.replace(/'/g, "\\'") + '\',\'' + p.price + '\',\'' + p.img + '\',\'' + p.stripe + '\',\'' + p.paypal + '\',\'' + p.wa + '\')"><img src="' + p.img + '" alt="' + p.name + '"><p>' + p.name + '</p></div>';
+      }).join('');
+      document.getElementById('modal-also-like').style.display = related.length ? 'block' : 'none';
+    };
+
     // Close on Escape
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCheckout(); });
+  </script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(function() {});
+    }
   </script>
 </body>
 </html>

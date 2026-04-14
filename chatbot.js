@@ -31,6 +31,73 @@
   const _a  = (k, d = '') => (_s && _s.dataset[k] != null) ? _s.dataset[k] : d;
   const _j  = (k, d)      => { try { return JSON.parse(_a(k, JSON.stringify(d))); } catch { return d; } };
 
+  // =====================================================
+  //  BUSINESS TYPE PRESETS
+  //  Set data-type="restaurant" etc. for instant config
+  // =====================================================
+  const BUSINESS_PRESETS = {
+    restaurant:  {
+      quickReplies:  ['View menu 🍽', 'Book a table 📅', 'Opening hours ⏰', 'Find us 📍'],
+      welcomeExtra:  'Ask me about our menu, specials, or book a table!',
+      systemHints:   'Common needs: table reservations (ask party size & date), menu questions, dietary requirements, opening hours, location & parking.',
+      bookingPrompt: 'Great! To book a table I need a few details.',
+    },
+    salon: {
+      quickReplies:  ['Book appointment 💇', 'Our treatments 💅', 'Prices 💰', 'Opening times ⏰'],
+      welcomeExtra:  'Book an appointment or ask about our services and prices.',
+      systemHints:   'Common needs: booking appointments (ask preferred date, treatment type, stylist preference), treatment details, pricing, cancellation policy.',
+      bookingPrompt: 'Perfect! Let me get your appointment sorted.',
+    },
+    gym: {
+      quickReplies:  ['Membership options 💪', 'Class timetable 📋', 'Personal training 🏋', 'Free trial 🎯'],
+      welcomeExtra:  'Ask about memberships, classes, or claim your free trial!',
+      systemHints:   'Common needs: membership pricing & tiers, class schedules, personal training, free trials, facility tour. Always mention the free trial option early.',
+      bookingPrompt: 'Great — let me set up your free trial or class booking.',
+    },
+    clinic: {
+      quickReplies:  ['Book appointment 🩺', 'Our services ⚕️', 'Insurance info 💊', 'Location & hours 📍'],
+      welcomeExtra:  'Book an appointment or ask about our medical services.',
+      systemHints:   'Common needs: appointment booking (ask reason for visit, urgency, insurance), services offered, accepted insurance, location, referral requirements. Be empathetic and professional.',
+      bookingPrompt: 'Of course. Let me get your appointment booked.',
+    },
+    agency: {
+      quickReplies:  ['What you offer 🚀', 'See our work ✦', 'Get a quote 📋', 'Book a call 📞'],
+      welcomeExtra:  'Tell me what you need and I\'ll show you how we can help.',
+      systemHints:   'Common needs: services overview, portfolio/case studies, pricing/quotes, timeline, process. Qualify: budget range, project type, timeline. Push toward a discovery call.',
+      bookingPrompt: 'Let\'s get a call booked with the team.',
+    },
+    ecommerce: {
+      quickReplies:  ['Track my order 📦', 'Returns & refunds 🔄', 'Browse products 🛍', 'Contact support 👋'],
+      welcomeExtra:  'I can help with orders, products, returns, or anything else!',
+      systemHints:   'Common needs: order tracking (ask order number or email), returns/refund policy, product questions, shipping times, size guides. Be fast and direct.',
+      bookingPrompt: 'Let me look that up for you.',
+    },
+    law: {
+      quickReplies:  ['Free consultation 🤝', 'Practice areas ⚖️', 'How it works 📋', 'Call us 📞'],
+      welcomeExtra:  'Ask about our services or book a free initial consultation.',
+      systemHints:   'Common needs: practice areas, consultation booking, fees/no-win-no-fee, case eligibility, process. Be professional and empathetic. Always offer free consultation. Important: never give specific legal advice — guide to consultation instead.',
+      bookingPrompt: 'I\'ll get a free consultation booked for you.',
+    },
+    realestate: {
+      quickReplies:  ['Properties for sale 🏠', 'Rentals 🔑', 'Book a viewing 📅', 'Get a valuation 💰'],
+      welcomeExtra:  'Find properties, book viewings, or get a free valuation.',
+      systemHints:   'Common needs: available properties (ask type, budget, area), viewings, valuations, rental info, mortgage advice referrals. Qualify: buying/renting, budget, timeline, location preference.',
+      bookingPrompt: 'Let me arrange a viewing for you.',
+    },
+    trades: {
+      quickReplies:  ['Get a quote 💰', 'What we cover 🔧', 'Book a job 📅', 'Emergency? 🚨'],
+      welcomeExtra:  'Get a free quote or book us for a job.',
+      systemHints:   'Common needs: quotes (ask job type, rough scope, postcode/location, urgency), availability, service areas, emergency call-outs. Capture email + phone for quote follow-up.',
+      bookingPrompt: 'Let me get the details for your quote.',
+    },
+    generic: {
+      quickReplies:  ['I need help 🙋', 'Pricing 💰', 'Book a call 📞', 'Talk to a human 👋'],
+      welcomeExtra:  '',
+      systemHints:   '',
+      bookingPrompt: 'Let me get a few details sorted.',
+    },
+  };
+
   const CONFIG = {
     botName:      _a('name',     'Aria'),
     botAvatar:    _a('avatar',   '✦'),
@@ -74,7 +141,7 @@
     autoLearnSite:      _a('autoLearn',   'true')  !== 'false',  // crawl site pages for bot knowledge
 
     // Core features
-    streamingEnabled:     true,
+    streamingEnabled:     false,
     multiBubble:          true,
     soundEnabled:         true,
     persistHistory:       true,
@@ -112,7 +179,12 @@
     ownerName:       _a('ownerName',   ''),       // owner name shown in visitor follow-up email
     siteName:        _a('siteName',    ''),       // site/business name shown in follow-up email
     followupEnabled: _a('followup',    'true') !== 'false', // send visitor a follow-up email after lead
+    businessType:    _a('type',         'generic'),          // restaurant|salon|gym|clinic|agency|ecommerce|law|realestate|trades
   };
+
+  // Apply business type preset (any explicit data-* overrides the preset)
+  const _preset = BUSINESS_PRESETS[CONFIG.businessType] || BUSINESS_PRESETS.generic;
+  if (!_s?.dataset?.quickReplies) CONFIG.quickReplies = _preset.quickReplies;
 
   const BASE        = CONFIG.serverUrl || window.location.origin;
   const PROXY_URL   = BASE + '/api/chat';
@@ -124,6 +196,7 @@
   const HANDOFF_URL = BASE + '/api/handoff';
   const AB_URL      = BASE + '/api/ab';
   const SHOPIFY_URL = BASE + '/api/shopify/order';
+  const GAP_URL     = BASE + '/api/gap';
 
   const SESSION_ID = (() => {
     const k = '_ac_sid'; let id = sessionStorage.getItem(k);
@@ -346,7 +419,8 @@
 
   /* Messages */
   #_ac-msgs{flex:1;overflow-y:auto;padding:14px 14px 8px;display:flex;flex-direction:column;
-    gap:7px;background:var(--bg2);scroll-behavior:smooth;}
+    gap:7px;background:var(--bg2);
+    -webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
   #_ac-msgs::-webkit-scrollbar{width:4px;}
   #_ac-msgs::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
   .ac-msg{max-width:84%;padding:11px 15px;border-radius:18px;font-size:14px;line-height:1.58;
@@ -510,6 +584,20 @@
   .ac-test-quote{font-size:13px;color:var(--text);font-style:italic;line-height:1.55;margin-bottom:6px;}
   .ac-test-author{font-size:11.5px;color:var(--text2);font-weight:600;}
 
+  /* Booking CTA card */
+  .ac-cta-card{background:linear-gradient(135deg,${A}22,${A}0a);border:1.5px solid ${A}55;
+    border-radius:16px;padding:16px;align-self:flex-start;max-width:94%;animation:_afad .3s ease;}
+  .ac-cta-title{font-size:13.5px;font-weight:700;color:var(--text);margin:0 0 10px;}
+  .ac-cta-btns{display:flex;flex-direction:column;gap:7px;}
+  .ac-cta-btn{display:block;padding:10px 14px;border-radius:10px;font-size:13px;font-weight:600;
+    cursor:pointer;text-align:center;text-decoration:none;border:none;font-family:inherit;
+    background:var(--bg3);color:var(--text);transition:background .15s;}
+  .ac-cta-btn:hover{background:var(--bg);}
+  .ac-cta-primary{background:var(--ab);color:var(--abt);}
+  .ac-cta-primary:hover{background:var(--abd);}
+  .ac-cta-skip{background:none;border:none;color:var(--text2);font-size:11.5px;cursor:pointer;
+    font-family:inherit;padding:6px 0 0;display:block;width:100%;text-align:center;}
+
   /* NPS survey */
   .ac-nps-card{background:var(--bot);border-radius:16px;padding:16px;align-self:flex-start;
     box-shadow:0 2px 8px var(--sh);animation:_afad .25s ease;max-width:94%;}
@@ -564,34 +652,211 @@
   }
 
   // =====================================================
-  //  SITE AUTO-CRAWL (background, cached per session)
+  //  INTELLIGENT SITE DETECTION
   // =====================================================
   let siteKnowledge = '';
+  let siteProfile   = null; // structured AI-generated business profile
 
-  async function crawlSite() {
-    if (!CONFIG.autoLearnSite) return;
-    const key = '_ac_site_v1';
-    const cached = sessionStorage.getItem(key);
-    if (cached) { siteKnowledge = cached; return; }
+  // Phase 1: Extract structured data instantly from the current page (no fetching)
+  function extractPageMeta() {
+    const get = sel => document.querySelector(sel)?.content?.trim() || '';
+    const getText = sel => document.querySelector(sel)?.innerText?.trim() || '';
 
-    const urls = [...new Set(
+    // Meta tags
+    const meta = {
+      title:       document.title,
+      description: get('meta[name="description"]') || get('meta[property="og:description"]'),
+      siteName:    get('meta[property="og:site_name"]'),
+      type:        get('meta[property="og:type"]'),
+      image:       get('meta[property="og:image"]'),
+    };
+
+    // Schema.org JSON-LD (rich structured data many sites include)
+    const schemas = [];
+    document.querySelectorAll('script[type="application/ld+json"]').forEach(s => {
+      try { schemas.push(JSON.parse(s.textContent)); } catch {}
+    });
+    const schema = schemas[0] || {};
+    const bizSchema = schemas.find(s => s['@type'] && /LocalBusiness|Organization|Restaurant|Store|Service|Product/.test(s['@type'])) || {};
+
+    // Extract contact info from page text using regex
+    const bodyText = document.body?.innerText || '';
+    const phones   = bodyText.match(/(\+?[\d\s\-().]{10,16})/g)?.filter(p => p.replace(/\D/g,'').length >= 10).slice(0,3) || [];
+    const emails   = bodyText.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g)?.filter(e => !e.includes('example') && !e.includes('your@')).slice(0,3) || [];
+    const prices   = [...new Set(bodyText.match(/[£$€]\s*[\d,]+(?:\.\d{2})?/g) || [])].slice(0,10);
+
+    // Page headings — reveal what the site is about
+    const h1s = Array.from(document.querySelectorAll('h1')).map(h => h.innerText.trim()).filter(Boolean).slice(0,3);
+    const h2s = Array.from(document.querySelectorAll('h2')).map(h => h.innerText.trim()).filter(Boolean).slice(0,6);
+
+    // Nav links — reveal site structure and services
+    const navLinks = Array.from(document.querySelectorAll('nav a, header a')).map(a => a.innerText.trim()).filter(t => t.length > 1 && t.length < 40).slice(0,12);
+
+    // Address from schema or text
+    const address = bizSchema.address
+      ? [bizSchema.address.streetAddress, bizSchema.address.addressLocality, bizSchema.address.postalCode].filter(Boolean).join(', ')
+      : '';
+
+    return {
+      meta, schema: bizSchema, phones, emails, prices, h1s, h2s, navLinks, address,
+      businessName: bizSchema.name || meta.siteName || meta.title?.split(/[-|–]/)[0]?.trim(),
+      businessType: bizSchema['@type'] || '',
+      openingHours: bizSchema.openingHours || bizSchema.openingHoursSpecification || null,
+    };
+  }
+
+  // Phase 2: Crawl key pages intelligently (prioritises about/contact/pricing/services)
+  async function crawlKeyPages() {
+    const origin = window.location.origin;
+    const PRIORITY = ['/about','/about-us','/contact','/contact-us','/pricing','/price','/prices','/services','/service','/products','/menu','/faq','/faqs','/team','/work','/portfolio'];
+
+    // Find all internal links, score them by priority
+    const allLinks = [...new Set(
       Array.from(document.querySelectorAll('a[href]'))
-        .map(a => { try { return new URL(a.href); } catch { return null; } })
-        .filter(u => u && u.origin === window.location.origin && !/\.(pdf|jpg|png|gif|zip|mp4|svg|css|js)/i.test(u.pathname))
-        .map(u => u.origin + u.pathname)
-    )].slice(0, 8);
+        .map(a => { try { const u = new URL(a.href); return u.origin === origin ? u.origin + u.pathname : null; } catch { return null; } })
+        .filter(Boolean)
+        .filter(u => !/\.(pdf|jpg|jpeg|png|gif|zip|mp4|svg|css|js|webp|ico)/i.test(u))
+    )];
 
-    const pages = await Promise.allSettled(urls.map(async url => {
-      const res = await fetch(url, { signal: AbortSignal.timeout(4000) });
-      const html = await res.text();
-      const doc  = new DOMParser().parseFromString(html, 'text/html');
-      doc.querySelectorAll('script,style,nav,footer,#_ac-w,noscript,aside').forEach(n => n.remove());
-      const text = doc.body?.innerText.replace(/\s+/g,' ').trim().slice(0, 600);
-      return text ? `[${doc.title}](${url}): ${text}` : null;
+    const scored = allLinks.map(url => {
+      const path = url.replace(origin,'').toLowerCase();
+      const score = PRIORITY.findIndex(p => path === p || path.startsWith(p + '/') || path.includes(p));
+      return { url, score: score === -1 ? 99 : score };
+    }).sort((a,b) => a.score - b.score);
+
+    const toFetch = scored.slice(0, 8).map(x => x.url);
+
+    const results = await Promise.allSettled(toFetch.map(async url => {
+      try {
+        const res  = await fetch(url, { signal: AbortSignal.timeout(5000) });
+        const html = await res.text();
+        const doc  = new DOMParser().parseFromString(html, 'text/html');
+        doc.querySelectorAll('script,style,#_ac-w,noscript,aside,iframe,svg').forEach(n => n.remove());
+
+        // Extract key content: headings + first paragraphs (most informative)
+        const headings = Array.from(doc.querySelectorAll('h1,h2,h3')).map(h => h.innerText.trim()).filter(Boolean).slice(0,6).join(' | ');
+        const paras    = Array.from(doc.querySelectorAll('p')).map(p => p.innerText.trim()).filter(t => t.length > 40).slice(0,4).join(' ');
+        const prices   = [...new Set((doc.body?.innerText||'').match(/[£$€]\s*[\d,]+(?:\.\d{2})?/g)||[])].slice(0,5).join(', ');
+        const phones   = (doc.body?.innerText||'').match(/(\+?[\d\s\-().]{10,16})/g)?.filter(p=>p.replace(/\D/g,'').length>=10).slice(0,2).join(', ')||'';
+        const emails   = (doc.body?.innerText||'').match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g)?.slice(0,2).join(', ')||'';
+
+        const content = [headings, paras, prices && `Prices: ${prices}`, phones && `Phone: ${phones}`, emails && `Email: ${emails}`].filter(Boolean).join('\n').slice(0, 800);
+        const label   = new URL(url).pathname.replace(/\//g,' ').trim() || 'Home';
+        return content ? `[${label}]\n${content}` : null;
+      } catch { return null; }
     }));
 
-    siteKnowledge = pages.filter(r => r.status==='fulfilled' && r.value).map(r => r.value).join('\n---\n').slice(0, 4000);
-    try { sessionStorage.setItem(key, siteKnowledge); } catch {}
+    return results.filter(r => r.status === 'fulfilled' && r.value).map(r => r.value).join('\n\n---\n\n');
+  }
+
+  // Phase 3: AI-powered site profile (one fast Haiku call, cached 24h in localStorage)
+  async function buildSiteProfile(rawContent, pageMeta) {
+    const cacheKey = '_ac_profile_' + window.location.hostname;
+    const cached   = localStorage.getItem(cacheKey);
+    if (cached) {
+      try {
+        const p = JSON.parse(cached);
+        // Cache valid for 24 hours
+        if (Date.now() - p._ts < 86_400_000) { siteProfile = p; return p; }
+      } catch {}
+    }
+
+    try {
+      const res = await fetch(PROXY_URL, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 600,
+          system: 'You extract structured business information from website content. Return ONLY valid JSON, no markdown.',
+          messages: [{ role: 'user', content: `Analyse this website content and extract key business facts.
+
+Page meta: ${JSON.stringify(pageMeta)}
+
+Site content:
+${rawContent.slice(0, 3000)}
+
+Return JSON:
+{
+  "businessName": "exact name",
+  "businessType": "e.g. plumbing company / restaurant / online store / law firm",
+  "description": "2 sentence plain-english description of what they do",
+  "location": "city/area or 'online only'",
+  "services": ["service 1", "service 2"],
+  "priceRange": "e.g. £50-200 / from £299 / free / not listed",
+  "contact": { "phone": "", "email": "", "address": "" },
+  "hours": "e.g. Mon-Fri 9am-5pm or not listed",
+  "keyFacts": ["fact 1", "fact 2", "fact 3"],
+  "tone": "professional / casual / luxury / budget-friendly"
+}` }],
+          sessionId: SESSION_ID,
+        }),
+      });
+      const data = await res.json();
+      const text = data?.content?.[0]?.text || '';
+      const json = JSON.parse(text.match(/\{[\s\S]*\}/)?.[0] || '{}');
+      if (json.businessName) {
+        json._ts = Date.now();
+        siteProfile = json;
+        try { localStorage.setItem(cacheKey, JSON.stringify(json)); } catch {}
+        return json;
+      }
+    } catch {}
+    return null;
+  }
+
+  // Main entry point — runs all 3 phases in the right order
+  async function crawlSite() {
+    if (!CONFIG.autoLearnSite) return;
+
+    // Check for existing cached knowledge (sessionStorage = within session)
+    const sessKey = '_ac_site_v2';
+    const cached  = sessionStorage.getItem(sessKey);
+    if (cached) { siteKnowledge = cached; return; }
+
+    // Phase 1: instant extraction (no network calls)
+    const pageMeta = extractPageMeta();
+
+    // Phase 2: crawl key pages
+    const crawled = await crawlKeyPages();
+
+    // Build raw knowledge string
+    const rawKnowledge = [
+      pageMeta.businessName && `Business: ${pageMeta.businessName}`,
+      pageMeta.businessType && `Type: ${pageMeta.businessType}`,
+      pageMeta.meta.description && `About: ${pageMeta.meta.description}`,
+      pageMeta.h1s.length && `Headlines: ${pageMeta.h1s.join(' | ')}`,
+      pageMeta.phones.length && `Phone: ${pageMeta.phones.join(', ')}`,
+      pageMeta.emails.length && `Email: ${pageMeta.emails.join(', ')}`,
+      pageMeta.address && `Address: ${pageMeta.address}`,
+      pageMeta.prices.length && `Prices seen: ${pageMeta.prices.join(', ')}`,
+      pageMeta.navLinks.length && `Navigation: ${pageMeta.navLinks.join(', ')}`,
+      crawled,
+    ].filter(Boolean).join('\n');
+
+    siteKnowledge = rawKnowledge.slice(0, 5000);
+    try { sessionStorage.setItem(sessKey, siteKnowledge); } catch {}
+
+    // Phase 3: AI profile (async, non-blocking — enriches subsequent responses)
+    buildSiteProfile(rawKnowledge, pageMeta).then(profile => {
+      if (profile) {
+        // Inject profile into site knowledge for richer context
+        const profileStr = [
+          `\n━━━ AI-DETECTED BUSINESS PROFILE ━━━`,
+          `Name: ${profile.businessName}`,
+          `Type: ${profile.businessType}`,
+          `Description: ${profile.description}`,
+          profile.location   && `Location: ${profile.location}`,
+          profile.services?.length && `Services: ${profile.services.join(', ')}`,
+          profile.priceRange && `Pricing: ${profile.priceRange}`,
+          profile.hours      && `Hours: ${profile.hours}`,
+          profile.contact?.phone && `Phone: ${profile.contact.phone}`,
+          profile.contact?.email && `Email: ${profile.contact.email}`,
+          profile.contact?.address && `Address: ${profile.contact.address}`,
+          profile.keyFacts?.length && `Key facts:\n${profile.keyFacts.map(f => `- ${f}`).join('\n')}`,
+        ].filter(Boolean).join('\n');
+        siteKnowledge = profileStr + '\n\n━━━ RAW SITE CONTENT ━━━\n' + rawKnowledge.slice(0, 3000);
+      }
+    });
   }
 
   // =====================================================
@@ -653,14 +918,123 @@
   }
 
   // =====================================================
-  //  BUYING INTENT + DISCOUNT CODE
+  //  BUYING INTENT + DISCOUNT CODE + CTA CARD
   // =====================================================
-  const BUYING_RE = /\b(price|pricing|cost|how much|buy|purchase|order|checkout|discount|deal|offer|affordable|expensive|budget|payment|pay|subscribe|plan|plans|package|get started|sign up|upgrade)\b/i;
+  const BUYING_RE   = /\b(price|pricing|cost|how much|buy|purchase|order|checkout|discount|deal|offer|affordable|expensive|budget|payment|pay|subscribe|plan|plans|package|get started|sign up|upgrade|book|reserve|appointment|schedule)\b/i;
+  const STRONG_INT  = /\b(ready|let'?s do it|book me|sign me up|want to book|i'll take|where do i|how do i sign|get started|i'm interested|i want to|i'd like to|let'?s go|sounds good|when can i|how do i book)\b/i;
+  const HESIT_RE    = /\b(maybe|not sure|let me think|i'll think|think about it|not ready|later|another time|need to decide|not convinced|unsure)\b/i;
+  const PRICE_RE    = /\b(price|cost|expensive|cheap|afford|budget|worth it|too much|value|pricing)\b/i;
+  const TRUST_RE    = /\b(reviews?|trust|guarantee|proof|testimonial|heard bad|seen complaints|how do i know|reliable|legit|scam|refund policy)\b/i;
+
+  let ctaShown = false;
+  let exitIntentFired = false;
+  let chatInactTimer  = null;
 
   function checkBuyingIntent(text) {
-    if (!CONFIG.discountCode || discountShown) return false;
-    if (BUYING_RE.test(text)) { buyingIntentScore++; if (buyingIntentScore >= 2) return true; }
+    if (STRONG_INT.test(text)) { buyingIntentScore += 3; }
+    else if (BUYING_RE.test(text)) { buyingIntentScore++; }
+    if (buyingIntentScore >= 2 && !ctaShown) { showBookingCTA(); return true; }
+    if (CONFIG.discountCode && !discountShown && buyingIntentScore >= 2) return true;
     return false;
+  }
+
+  // Booking CTA card — shown when strong purchase intent is detected
+  function showBookingCTA() {
+    if (ctaShown) return;
+    ctaShown = true;
+    const hasBooking  = CONFIG.booking;
+    const hasCalendly = CONFIG.handoffUrl;
+    const hasWa       = CONFIG.handoffWa;
+    if (!hasBooking && !hasCalendly && !hasWa) return;
+    const card = document.createElement('div'); card.className = 'ac-cta-card';
+    const btns = [];
+    if (hasBooking)  btns.push(`<button class="ac-cta-btn ac-cta-primary" onclick="this.closest('.ac-cta-card').parentNode&&this.closest('.ac-cta-card').remove();startBooking()">📅 Book now — 2 minutes</button>`);
+    if (hasCalendly) btns.push(`<a href="${CONFIG.handoffUrl}" target="_blank" class="ac-cta-btn">📞 Schedule a call</a>`);
+    if (hasWa && !hasBooking) btns.push(`<a href="https://wa.me/${CONFIG.handoffWa.replace(/\D/g,'')}" target="_blank" class="ac-cta-btn">💬 WhatsApp us</a>`);
+    card.innerHTML = `<p class="ac-cta-title">Ready to get started? ✦</p><div class="ac-cta-btns">${btns.join('')}</div><button class="ac-cta-skip" onclick="this.parentNode.remove()">Maybe later</button>`;
+    insertBefore(card); scrollBottom();
+    trackEvent('booking_cta_shown', { page: document.title });
+  }
+
+  // =====================================================
+  //  BUILT-IN OBJECTION LIBRARY
+  //  Handles common objections even without data-objections config
+  // =====================================================
+  const OBJECTION_LIBRARY = [
+    {
+      name: 'price',
+      re: /\b(too expensive|can'?t afford|too much|cheaper|price is|costs too|out of budget|overpriced|not in my budget|that'?s a lot|pretty pricey)\b/i,
+      response(btype) {
+        const byType = {
+          restaurant: `Totally fair — let me make sure you have the full picture. Our ${_preset.quickReplies?.[0] ? '' : 'menu'} is great value for what you get, and we have options across different budgets. What were you thinking of ordering?`,
+          salon:       `We have options at different price points! Want me to find something that fits your budget? What treatment are you looking for?`,
+          agency:      `Fair point to raise. Quality work is an investment, and most clients find it pays for itself quickly — would it help if I walked through exactly what's included so you can see what you're getting?`,
+          clinic:      `Completely understand — costs matter. We do offer payment plans to spread it out. Would that make it more manageable?`,
+          trades:      `Our quotes are fully itemised so you can see exactly what you're paying for. Want me to get you a free one? Takes about 2 minutes.`,
+          gym:         `We have a few membership tiers — want me to find the one that fits your budget? We also have a free trial so you can try before committing.`,
+          default:     `That's fair to raise. Before writing it off, let me make sure you have the full picture on what's included — a lot of people find it's better value than they expected. Can I walk you through it?`,
+        };
+        return byType[btype] || byType.default;
+      },
+    },
+    {
+      name: 'timing',
+      re: /\b(not ready|maybe later|need to think|let me think|think about it|not sure yet|come back|another time|too busy|not right now)\b/i,
+      response() { return `No pressure at all! Can I ask — is there something specific you're not sure about? I might be able to clear it up right now and save you some time 😊`; },
+    },
+    {
+      name: 'trust',
+      re: /\b(can i trust|not sure about|seen bad reviews|how do i know|what if|guarantee|seen complaints|heard bad things|legit|reliable)\b/i,
+      response() { return `Completely fair question — trust has to be earned. ${CONFIG.testimonials.length ? `We've got plenty of happy customers who felt the same way at first. Want me to share what they said?` : `We've been doing this for [X] and stand behind our work. Is there something specific you'd like to know to feel more comfortable?`}`; },
+    },
+    {
+      name: 'competition',
+      re: /\b(competitor|another company|someone else|other options|shopping around|comparing|looked at|also considering|vs |versus)\b/i,
+      response() { return `Smart to compare — you absolutely should. What matters most to you when making your decision? Tell me and I'll make sure you're comparing like for like — we often win on things people don't even think to ask about.`; },
+    },
+  ];
+
+  // Check built-in objection library (runs if no custom objection matched)
+  function checkBuiltinObjection(text) {
+    for (const obj of OBJECTION_LIBRARY) {
+      if (obj.re.test(text)) return obj.response(CONFIG.businessType);
+    }
+    return null;
+  }
+
+  // =====================================================
+  //  SMART SOCIAL PROOF TIMING
+  //  Shows testimonials when doubt/price is raised, not randomly
+  // =====================================================
+  function maybeShowSocialProof(triggerText) {
+    if (!CONFIG.testimonials.length || testimonialShown) return;
+    if (!PRICE_RE.test(triggerText) && !HESIT_RE.test(triggerText) && !TRUST_RE.test(triggerText)) return;
+    testimonialShown = true;
+    const t = CONFIG.testimonials[Math.floor(Math.random() * CONFIG.testimonials.length)];
+    const card = document.createElement('div'); card.className = 'ac-testimonial';
+    card.innerHTML = `<div class="ac-test-quote">"${t.text}"</div><div class="ac-test-author">— ${t.author}${t.role ? `, ${t.role}` : ''} ⭐⭐⭐⭐⭐</div>`;
+    setTimeout(() => { insertBefore(card); scrollBottom(); }, 900);
+    trackEvent('social_proof_shown', { trigger: triggerText.slice(0, 50) });
+  }
+
+  // =====================================================
+  //  CHAT INACTIVITY NUDGE (open chat, gone quiet)
+  // =====================================================
+  function resetChatInactivity() {
+    clearTimeout(chatInactTimer);
+    if (!isOpen || isBusy || !botMsgs) return;
+    chatInactTimer = setTimeout(() => {
+      if (!isOpen || isBusy) return;
+      const hasUnanswered = history.length > 0 && history[history.length-1]?.role === 'assistant';
+      if (!hasUnanswered) return;
+      const nudges = [
+        `Still there? No pressure — take your time. If anything's unclear, just ask 😊`,
+        `Want me to send you everything we covered? I can email it so you have it for later 📧`,
+        `Just checking in — is there anything else I can help you with? ✦`,
+      ];
+      makeBotBubble(nudges[Math.floor(Math.random() * nudges.length)]);
+      sounds.pop(); addTimestamp(); scrollBottom();
+    }, 50000); // 50s of silence in open chat
   }
 
   function showDiscount() {
@@ -678,14 +1052,16 @@
   }
 
   // =====================================================
-  //  OBJECTION HANDLING
+  //  OBJECTION HANDLING (custom config first, built-in library fallback)
   // =====================================================
   function checkObjection(text) {
     const lower = text.toLowerCase();
+    // Custom objections from data-objections have priority
     for (const [kw, resp] of Object.entries(CONFIG.objections)) {
       if (lower.includes(kw.toLowerCase())) return resp;
     }
-    return null;
+    // Built-in objection library (price/trust/timing/competition)
+    return checkBuiltinObjection(text);
   }
 
   // =====================================================
@@ -699,9 +1075,16 @@
 
   // =====================================================
   //  SOCIAL PROOF / TESTIMONIAL INJECTION
+  //  Smart: shows on price/doubt triggers, or after message 5 as fallback
   // =====================================================
-  function maybeShowTestimonial() {
-    if (!CONFIG.testimonials.length || testimonialShown || botMsgs !== 4) return;
+  function maybeShowTestimonial(triggerText = '') {
+    if (!CONFIG.testimonials.length || testimonialShown) return;
+    // Smart trigger: show on price/hesitation/trust mention
+    if (triggerText && (PRICE_RE.test(triggerText) || HESIT_RE.test(triggerText) || TRUST_RE.test(triggerText))) {
+      return maybeShowSocialProof(triggerText);
+    }
+    // Fallback: show after 5 messages regardless
+    if (botMsgs !== 5) return;
     testimonialShown = true;
     const t = CONFIG.testimonials[Math.floor(Math.random() * CONFIG.testimonials.length)];
     const card = document.createElement('div'); card.className = 'ac-testimonial';
@@ -780,18 +1163,54 @@
   // =====================================================
   //  BOOKING FLOW
   // =====================================================
-  let bookingState = null; // null | { step:'name'|'email'|'datetime'|'notes'|'confirm', data:{} }
+  let bookingState   = null;  // null | { step:'name'|'email'|'datetime'|'notes'|'confirm', data:{} }
+  let qualification  = { need: null, urgency: null, budget: null }; // populated from conversation
+
+  // Log a knowledge gap (question the bot couldn't answer from site knowledge)
+  function logKnowledgeGap(question) {
+    try {
+      fetch(GAP_URL, { method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ question, page: document.title, url: window.location.href }) });
+    } catch {}
+  }
+
+  // Detect if the bot admitted it doesn't know something → log it
+  function detectKnowledgeGap(botText) {
+    const lc = botText.toLowerCase();
+    if (/i (don'?t|do not) have (that|the|those|that specific|specific) (info|information|details?)|i'?m not (sure|certain) about that|i don'?t know that|can'?t find (that|that information)|that (information )?isn'?t (in|available)|contact (the )?team (for|about) (that|more)/i.test(lc)) {
+      const lastQ = history.filter(m => m.role === 'user').slice(-1)[0]?.content;
+      if (lastQ) logKnowledgeGap(lastQ);
+    }
+  }
+
+  // Extract qualification signals from user message
+  function updateQualification(text) {
+    const lc = text.toLowerCase();
+    if (!qualification.urgency) {
+      if (/urgent|asap|right away|today|immediately|emergency|as soon as/i.test(lc)) qualification.urgency = 'urgent';
+      else if (/next week|soon|this month|shortly/i.test(lc)) qualification.urgency = 'soon';
+      else if (/just looking|not sure yet|in future|eventually|no rush/i.test(lc)) qualification.urgency = 'browsing';
+    }
+    if (!qualification.budget) {
+      const budgetMatch = lc.match(/budget.{0,20}(£|\$|€)?(\d[\d,k]+)|\b(£|\$|€)(\d[\d,k]+)/);
+      if (budgetMatch) qualification.budget = budgetMatch[0];
+    }
+    if (!qualification.need && text.length > 20) {
+      qualification.need = text.slice(0, 100);
+    }
+  }
 
   async function startBooking() {
     bookingState = { step: 'name', data: {} };
+    const bookingPrompt = _preset.bookingPrompt || 'Let me get a few details sorted.';
     if (userName) {
       bookingState.data.name = userName;
       bookingState.step = 'datetime';
       await delay(300);
-      makeBotBubble(`Great! 📅 What date and time works for you, ${userName}?\n(e.g. "Tuesday 2pm" or "next Friday morning")`);
+      makeBotBubble(`${bookingPrompt} ${userName}, what date and time works best for you?\n(e.g. "Tuesday 2pm" or "next Friday morning")`);
     } else {
       await delay(300);
-      makeBotBubble("Sure thing! 📅 Let me get a few details. What's your name?");
+      makeBotBubble(`${bookingPrompt} What's your name?`);
     }
     sounds.pop(); addTimestamp(); scrollBottom();
   }
@@ -1011,43 +1430,98 @@
       ? `\nDISCOUNT: Available code "${CONFIG.discountCode}" — a discount card will appear automatically on buying intent. Do NOT mention the code verbally.`
       : '';
 
+    const businessName  = CONFIG.siteName || (siteKnowledge?.match(/business(?:Name)?[:\s]+([^\n]+)/i)?.[1]) || document.title;
+    const typePreset    = BUSINESS_PRESETS[CONFIG.businessType] || BUSINESS_PRESETS.generic;
+    const typeHints     = typePreset.systemHints ? `\nBUSINESS TYPE (${CONFIG.businessType}): ${typePreset.systemHints}` : '';
+
+    const qualCtx = (qualification.need || qualification.urgency || qualification.budget)
+      ? `\nVISITOR PROFILE (gathered from conversation):${qualification.need ? `\n- Need: ${qualification.need}` : ''}${qualification.urgency ? `\n- Urgency: ${qualification.urgency}` : ''}${qualification.budget ? `\n- Budget: ${qualification.budget}` : ''}`
+      : '';
+
     return `
-You are ${CONFIG.botName}, a sharp, friendly, and slightly witty AI assistant on a website.
-${userName ? `The user's name is ${userName}. Use their name occasionally — it feels personal and warm.` : ''}
+You are ${CONFIG.botName}, the AI assistant for ${businessName}. You are not a generic chatbot — you are a trained specialist who knows this business and your job is to help visitors make a decision and take action.
+${userName ? `\nThe visitor's name is ${userName}. Use it once naturally — not in every message.` : ''}
 
-PERSONALITY & MOOD (current: ${mood.vibe}):
-- Warm, confident, slightly playful. Cool friend energy, not corporate.
-- 1-2 emoji per message. Never zero. Never overwhelming.
-- Light humour when fitting. Never joke when someone is frustrated.
+━━━ YOUR MISSION ━━━
+Help every visitor complete their goal AND convert them into a lead, booking, or sale. Think like a brilliant sales consultant: understand their need, show them the right solution, remove doubts, guide them to the next step. A conversation that ends without an outcome is a missed opportunity.
 
-COMMUNICATION:
-- 2-3 sentences max. Concise and punchy. No bullet points.
-- Always end with a question or next step.
-- Respond in the user's language if possible (browser lang: ${userLang}).
+━━━ CONVERSATION RULES ━━━
 
-PAGE CONTEXT:
-Page: ${document.title} | URL: ${window.location.href} | Referrer: ${document.referrer || 'Direct'}
+1. ANSWER FIRST — directly answer before anything else. No "Great question!", no deflection, no restating what they said. Get straight to the point.
+
+2. ACCURACY OVER CONFIDENCE — only state facts from the site knowledge below. If you genuinely don't know, say: "I don't have that info — the team can answer that directly. Want me to connect you?" Never invent details.
+
+3. MATCH LENGTH TO COMPLEXITY — one-liner question = 1-2 sentences. Complex question = full thorough answer. Never cut an answer short, but don't pad either.
+
+4. SOUND HUMAN — smart, warm colleague. Contractions, natural rhythm. Current energy: ${mood.vibe}. One emoji max. Zero emojis if user seems frustrated.
+
+5. LANGUAGE — respond in the visitor's language (browser: ${userLang}).
+
+━━━ CONVERSION FRAMEWORK ━━━
+Every message should advance one of these goals:
+A) UNDERSTAND → unclear what they need? Ask ONE focused question. Just one.
+B) INFORM → give the information that moves them forward (not generic, specific to their situation)
+C) CLOSE → once you understand their need, guide to the natural next step:
+   - Interest in a service → "Want me to get that booked?" or output ::BOOKING
+   - Comparing options → help them choose, then: "Shall I get that sorted for you?"
+   - Asking about pricing → answer, then: "Would it be worth a quick call to go through what fits your budget?"
+   - Just browsing → give real value, then: "If you'd like, I can send you the key info by email so you have it for later"
+   - Asking about availability → answer, then immediately offer to reserve
+
+SOFT CLOSE PHRASES (use naturally, not every message — rotate them):
+- "Want me to get that booked in for you?"
+- "Shall I check what's available?"
+- "Would it help if I sent you a quote?"
+- "I can sort that out right now — only takes 2 minutes."
+- "Ready to take the next step? I can help with that."
+
+OBJECTION HANDLING (Acknowledge → Understand the blocker → Address specifically → Re-offer):
+- Price concern: Establish value BEFORE discounting. Ask what specifically feels expensive.
+- "Not ready": Ask ONE question to find the real blocker. Never accept a vague "I'll think about it".
+- Trust concern: Offer proof (testimonials, guarantees, track record). Then re-offer.
+- Comparison: Help them compare honestly. We win on [differentiator]. Don't fear competitors.
+
+Qualification (gather naturally — never interrogate):
+- What they actually need (their specific goal or problem)
+- Their urgency (urgent, soon, or just researching)
+- Budget range (only if it helps give better advice)
+${typeHints}${qualCtx}
+
+━━━ BUSINESS CONTEXT ━━━
+Page: "${document.title}"
+URL: ${window.location.href}
+${document.referrer ? `Referred from: ${document.referrer}` : ''}
 ${hoursInfo}${sentimentCtx}${journeyCtx}${returnCtx}${competitorCtx}${discountCtx}
-${productInfo}
-${bookingInfo}
+${productInfo}${bookingInfo}
 
-FULL SITE KNOWLEDGE BASE:
-${siteKnowledge || getPageContent()}
+━━━ SITE KNOWLEDGE ━━━
+${siteKnowledge || getPageContent() || 'Site knowledge loading — use context clues from the URL and page title to answer. Be honest if you need more info.'}
 
-HUMAN HANDOFF (output ::HANDOFF when user wants a real person):
-${getHandoffInfo()}
+━━━ HANDOFF ━━━
+If visitor asks to speak to a human or the bot can't help further, output ::HANDOFF
+Options: ${getHandoffInfo()}
 
-RICH RESPONSES (use inline when genuinely helpful):
-- ::BUTTON[Label](message to send)
-- ::HANDOFF
-- ::IMAGE[url]
-- ::VIDEO[youtube-or-video-url]
-- ::DOCUMENT[url|Friendly filename]
-- ::BOOKING — triggers in-chat booking form
+━━━ RICH ELEMENTS ━━━
+Use sparingly — only when genuinely helpful:
+::BUTTON[Label](message)   — clickable option
+::HANDOFF                  — connect to human
+::IMAGE[url]               — show image
+::VIDEO[url]               — embed video
+::DOCUMENT[url|Name]       — downloadable file
+::BOOKING                  — open booking form
 
-FOLLOW-UPS (required after every response):
-FOLLOWUPS: [Short question?] | [Short question?] | [Short question?]
-${CONFIG.customPrompt ? '\n' + CONFIG.customPrompt : ''}`.trim();
+━━━ FOLLOW-UPS ━━━
+End every response with this line. Make them the NEXT LOGICAL STEP in the visitor's journey toward a decision — not generic questions.
+Format: FOLLOWUPS: [Question one?] | [Question two?] | [Question three?]
+
+━━━ NEVER DO ━━━
+- Open with "Great question!", "Of course!", "Certainly!", "Absolutely!" or any filler
+- Repeat what the user said back to them
+- Use bullet points for fewer than 4 items
+- Apologise unnecessarily
+- Volunteer that you're an AI (only answer honestly if directly asked)
+- Make up business details not in the site knowledge
+${CONFIG.customPrompt ? `\n━━━ CUSTOM INSTRUCTIONS (override above if conflict) ━━━\n${CONFIG.customPrompt}` : ''}`.trim();
   }
 
   // =====================================================
@@ -1080,9 +1554,19 @@ ${CONFIG.customPrompt ? '\n' + CONFIG.customPrompt : ''}`.trim();
   // =====================================================
   function selectModel(text) {
     if (!CONFIG.useSmartModel) return CONFIG.baseModel;
-    const complex = text.trim().split(/\s+/).length > 20 ||
-      /\b(explain|compare|difference|how does|why|recommend|best|pros|cons|should i|versus|\bvs\b|analyse|analyze|strategy)\b/i.test(text);
-    return complex ? CONFIG.smartModel : CONFIG.baseModel;
+    // Use the smarter model for anything requiring reasoning, comparison, or detail
+    const needsReasoning = /\b(explain|compare|difference|how does|why|recommend|best|pros|cons|should i|versus|\bvs\b|analyse|analyze|strategy|plan|help me|advice|opinion|think|worth it|better|worse|review|breakdown|step.?by.?step|how to|what happens|what if|when should|which one)\b/i.test(text);
+    const longMessage    = text.trim().split(/\s+/).length > 15;
+    const hasQuestion    = (text.match(/\?/g) || []).length > 1; // multiple questions
+    return (needsReasoning || longMessage || hasQuestion) ? CONFIG.smartModel : CONFIG.baseModel;
+  }
+
+  function selectMaxTokens(text) {
+    // Give more tokens to complex questions so answers aren't cut off
+    const words = text.trim().split(/\s+/).length;
+    if (words > 30) return 800;
+    if (words > 15) return 600;
+    return 400;
   }
 
   // =====================================================
@@ -1152,15 +1636,19 @@ ${CONFIG.customPrompt ? '\n' + CONFIG.customPrompt : ''}`.trim();
     insertBefore(bar);
   }
 
+  let _lastFollowupWrap = null;
   function renderFollowups(questions) {
     if (!CONFIG.suggestedFollowups || !questions.length) return;
+    // Remove previous follow-ups — only show the most recent set
+    if (_lastFollowupWrap) { try { _lastFollowupWrap.remove(); } catch {} }
     const wrap = document.createElement('div'); wrap.className = 'ac-fu-wrap';
     questions.forEach(q => {
       const b = document.createElement('button'); b.className = 'ac-fu'; b.textContent = q;
-      b.onclick = () => { wrap.remove(); sendMessage(q); };
+      b.onclick = () => { wrap.remove(); _lastFollowupWrap = null; sendMessage(q); };
       wrap.appendChild(b);
     });
     insertBefore(wrap); scrollBottom();
+    _lastFollowupWrap = wrap;
   }
 
   function renderQuickReplies(replies) {
@@ -1265,13 +1753,13 @@ ${CONFIG.customPrompt ? '\n' + CONFIG.customPrompt : ''}`.trim();
   // =====================================================
   //  STREAMING RESPONSE
   // =====================================================
-  async function streamResponse(messages, model) {
+  async function streamResponse(messages, model, maxTokens = 500) {
     const bubble = makeBotBubble(''); bubble.classList.add('stream');
     let fullText = '';
     try {
       const res = await fetch(STREAM_URL, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ system: buildSystemPrompt(), messages, model, max_tokens: 500, sessionId: SESSION_ID }),
+        body: JSON.stringify({ system: buildSystemPrompt(), messages, model, max_tokens: maxTokens, sessionId: SESSION_ID }),
       });
       if (!res.ok) throw new Error();
       const reader = res.body.getReader(), decoder = new TextDecoder();
@@ -1289,15 +1777,15 @@ ${CONFIG.customPrompt ? '\n' + CONFIG.customPrompt : ''}`.trim();
           } catch (e) { if (e.message && !e.message.includes('JSON')) throw e; }
         }
       }
-    } catch { bubble.classList.remove('stream'); bubble.textContent = "Something went wrong 😅 Try again?"; return ''; }
+    } catch { bubble.classList.remove('stream'); bubble.remove(); return ''; }
     bubble.classList.remove('stream'); bubble.remove();
     return fullText;
   }
 
-  async function standardResponse(messages, model) {
+  async function standardResponse(messages, model, maxTokens = 500) {
     const res = await fetch(PROXY_URL, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ system: buildSystemPrompt(), messages, model, max_tokens: 500, sessionId: SESSION_ID }),
+      body: JSON.stringify({ system: buildSystemPrompt(), messages, model, max_tokens: maxTokens, sessionId: SESSION_ID }),
     });
     if (!res.ok) throw new Error();
     const data = await res.json(); return data.content[0].text;
@@ -1351,8 +1839,9 @@ ${CONFIG.customPrompt ? '\n' + CONFIG.customPrompt : ''}`.trim();
       return;
     }
 
-    // Sentiment analysis (update score before response)
+    // Sentiment analysis + qualification (both update before response)
     analyzeSentiment(text);
+    updateQualification(text);
 
     // Easter egg check
     const egg = checkEasterEgg(text);
@@ -1432,8 +1921,12 @@ ${CONFIG.customPrompt ? '\n' + CONFIG.customPrompt : ''}`.trim();
     isBusy = true;
     history.push({ role: 'user', content: text });
 
-    const model   = selectModel(text);
-    const thinkTxt = nextThink();
+    // Keep last 12 exchanges (24 messages) — enough context without confusing the model
+    if (history.length > 24) history = history.slice(-24);
+
+    const model     = selectModel(text);
+    const maxTokens = selectMaxTokens(text);
+    const thinkTxt  = nextThink();
     typ().classList.add('show');
     el('_ac-ttext').textContent = thinkTxt;
     scrollBottom();
@@ -1443,10 +1936,10 @@ ${CONFIG.customPrompt ? '\n' + CONFIG.customPrompt : ''}`.trim();
       let fullText = '';
       if (CONFIG.streamingEnabled) {
         typ().classList.remove('show');
-        fullText = await streamResponse([...history], model);
+        fullText = await streamResponse([...history], model, maxTokens);
         if (fullText) deliverResponse(fullText);
       } else {
-        fullText = await standardResponse([...history], model);
+        fullText = await standardResponse([...history], model, maxTokens);
         typ().classList.remove('show');
         if (fullText) deliverResponse(fullText);
       }
@@ -1457,9 +1950,13 @@ ${CONFIG.customPrompt ? '\n' + CONFIG.customPrompt : ''}`.trim();
         history.push({ role: 'assistant', content: ct });
         botMsgs++; msgStreak++;
         saveHistory(); ping(); maybeShowLead(); checkStreak();
-        // Engagement extras (order matters — most impactful first)
-        maybeShowTestimonial();
-        if (checkBuyingIntent(text)) setTimeout(showDiscount, 600);
+        // Detect and log knowledge gaps (questions the bot couldn't answer from site content)
+        detectKnowledgeGap(ct);
+        // Engagement extras — order matters
+        maybeShowTestimonial(text); // social proof on price/doubt triggers
+        if (checkBuyingIntent(text)) setTimeout(showDiscount, 800); // discount only if code configured
+        // Reset inactivity timer so we can nudge if they go quiet after reading the reply
+        resetChatInactivity();
         showNPS();
         // Track competitor mention to system prompt (already handled via context, just flag to owner)
         if (checkCompetitor(text)) ping({ competitorMention: text.slice(0, 200) });
@@ -1468,7 +1965,9 @@ ${CONFIG.customPrompt ? '\n' + CONFIG.customPrompt : ''}`.trim();
       }
     } catch {
       typ().classList.remove('show');
-      makeBotBubble("Hmm — something went wrong on my end 😅 Give it another go?");
+      // Remove the last user message from history so they can retry cleanly
+      if (history[history.length - 1]?.role === 'user') history.pop();
+      makeBotBubble("Sorry, I hit a snag there — try sending that again 😊");
     }
 
     isBusy = false;
@@ -1508,7 +2007,23 @@ ${CONFIG.customPrompt ? '\n' + CONFIG.customPrompt : ''}`.trim();
       if (saved && history.length) setTimeout(restoreSession, 200);
       else setTimeout(showWelcome, 350);
     }
-    if (isOpen) { closeMenu(); setTimeout(() => el('_ac-inp').focus(), 380); resetInactivity(); }
+    if (isOpen) { closeMenu(); setTimeout(() => el('_ac-inp').focus(), 380); resetInactivity(); resetChatInactivity(); }
+    if (!isOpen) clearTimeout(chatInactTimer);
+    // Lock body scroll when chat is open to prevent page scrolling behind
+    if (isOpen) {
+      document.body.dataset.acScrollY = window.scrollY;
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${window.scrollY}px`;
+      document.body.style.width = '100%';
+    } else {
+      const scrollY = document.body.dataset.acScrollY || '0';
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      window.scrollTo(0, parseInt(scrollY));
+    }
   }
 
   function showWelcome() {
@@ -1547,7 +2062,10 @@ ${CONFIG.customPrompt ? '\n' + CONFIG.customPrompt : ''}`.trim();
           : null;
         const greeting = userName
           ? `Hey ${userName}! ✦ Good to have you back — what can I help with?`
-          : (returnGreeting || refMsg || pageMsg || CONFIG.welcomeMessage || `Hey! I'm ${CONFIG.botName} ${CONFIG.botAvatar} — how can I help today? 😊`);
+          : (returnGreeting || refMsg || pageMsg || CONFIG.welcomeMessage || (() => {
+              const extra = _preset.welcomeExtra ? ` ${_preset.welcomeExtra}` : '';
+              return `Hey! I'm ${CONFIG.botName} ${CONFIG.botAvatar} — how can I help today?${extra}`;
+            })());
         makeBotBubble(greeting);
         sounds.pop(); addTimestamp();
         renderQuickReplies(CONFIG.quickReplies);
@@ -1595,9 +2113,20 @@ ${CONFIG.customPrompt ? '\n' + CONFIG.customPrompt : ''}`.trim();
   function maybeShowLead() {
     if (!CONFIG.leadCaptureEnabled || leadDone || botMsgs !== CONFIG.leadCaptureAfter) return;
     const card = document.createElement('div'); card.id = '_ac-lead';
-    const nameHook = userName ? `, ${userName}` : '';
+    const nameHook = userName ? ` ${userName}` : '';
+    // Contextual prompt based on what we know about the visitor
+    let prompt = `Want me to send you a summary of this, ${nameHook || 'friend'}? I'll email it over 📧`;
+    if (qualification.need && qualification.urgency === 'urgent') {
+      prompt = `You seem to be in a hurry${nameHook ? ', ' + nameHook : ''} — drop your email and someone from the team will reach out today 📧`;
+    } else if (qualification.urgency === 'browsing') {
+      prompt = `Still exploring? I'll send you the key info so you can review it later 📧`;
+    } else if (CONFIG.businessType === 'restaurant' || CONFIG.businessType === 'salon' || CONFIG.businessType === 'clinic') {
+      prompt = `Want me to send you the details${nameHook ? ', ' + nameHook : ''}? I can email everything we covered 📧`;
+    } else if (CONFIG.businessType === 'agency' || CONFIG.businessType === 'trades') {
+      prompt = `Want a quick quote? Drop your email and the team will be in touch with pricing 📧`;
+    }
     card.innerHTML = `
-      <p>Enjoying the chat${nameHook}? Drop your email and I'll follow up 📧</p>
+      <p>${prompt}</p>
       <div id="_ac-lead-row">
         <input id="_ac-lead-inp" type="email" placeholder="your@email.com" />
         <button id="_ac-lead-sub">Send ✓</button>
@@ -1619,6 +2148,9 @@ ${CONFIG.customPrompt ? '\n' + CONFIG.customPrompt : ''}`.trim();
         fetch(LEAD_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({
           email, name: userName, sessionId: SESSION_ID,
           page: document.title, url: window.location.href, journey,
+          // Qualification data (gathered naturally during chat)
+          qualification,
+          businessType: CONFIG.businessType,
           // Multi-tenant: tell server which owner to alert
           ownerEmail:      CONFIG.ownerEmail,
           ownerName:       CONFIG.ownerName,
@@ -1744,7 +2276,22 @@ ${CONFIG.customPrompt ? '\n' + CONFIG.customPrompt : ''}`.trim();
 
   function initTriggers() {
     if (CONFIG.exitIntentEnabled) {
-      document.addEventListener('mouseleave', e => { if (e.clientY <= 0 && !isOpen && !hasOpened) toggle(true); });
+      document.addEventListener('mouseleave', e => {
+        if (e.clientY > 0) return;
+        if (isOpen && history.length >= 2 && !exitIntentFired) {
+          // Mid-conversation exit — reference what they were discussing
+          exitIntentFired = true;
+          const lastQ = history.filter(m => m.role === 'user').slice(-1)[0]?.content || '';
+          const topic = lastQ.slice(0, 60);
+          const msg = topic
+            ? `Before you go — you were asking about "${topic}". Want me to sort that out for you right now? It only takes a minute ✦`
+            : `Before you go — is there anything else I can help with? I want to make sure you've got everything you need 😊`;
+          setTimeout(() => { makeBotBubble(msg); sounds.pop(); addTimestamp(); scrollBottom(); }, 200);
+        } else if (!isOpen && !hasOpened) {
+          // Never opened — just open the chat
+          toggle(true);
+        }
+      });
     }
     if (CONFIG.scrollTriggerEnabled) {
       let fired = false;

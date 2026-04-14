@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 import Anthropic        from '@anthropic-ai/sdk';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const PORT      = 3000;
+const PORT      = process.env.PORT || 3000;
 const client    = new Anthropic(); // reads ANTHROPIC_API_KEY from env
 
 const MIME = {

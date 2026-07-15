@@ -1,0 +1,182 @@
+# Sandboxed Second Pass — Grok Build PR review (open-source harness)
+# Install: bash scripts/install-to-repo.sh /path/to/client-repo
+# Secret: XAI_API_KEY (org or repo). Missing secret → sticky setup comment (no red X spam).
+# Product: £99–£299/mo retainer or bundled AireyAI maintenance
+
+name: Grok sandboxed PR review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: grok-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  grok-review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check secret
+        id: secret
+        env:
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
+        run: |
+          if [ -z "${XAI_API_KEY:-}" ]; then
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::XAI_API_KEY missing — posting setup comment"
+          else
+            echo "present=true" >> "$GITHUB_OUTPUT"
+            mkdir -p "$HOME/.grok"
+            printf 'api_key = "%s"\n' "$XAI_API_KEY" > "$HOME/.grok/credentials.toml"
+            echo "XAI_API_KEY=$XAI_API_KEY" >> "$GITHUB_ENV"
+          fi
+
+      - name: Setup comment when secret missing
+        if: steps.secret.outputs.present != 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const marker = '<!-- grok-build-sandboxed-review -->';
+            const full = `${marker}
+## Grok Build · Sandboxed Second Pass
+
+_Setup needed:_ add repo (or org) secret **\`XAI_API_KEY\`**, then push an empty commit or re-run this workflow.
+
+---
+_Open-source harness · AireyAI Sandboxed Second Pass_`;
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              per_page: 100,
+            });
+            const existing = comments.find(c => (c.body || '').includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body: full,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: full,
+              });
+            }
+
+      - name: Setup Grok CLI
+        if: steps.secret.outputs.present == 'true'
+        run: |
+          set -euo pipefail
+          curl -fsSL https://x.ai/cli/install.sh | bash
+          echo "$HOME/.grok/bin" >> "$GITHUB_PATH"
+          grok --version
+
+      - name: Collect diff
+        if: steps.secret.outputs.present == 'true'
+        run: |
+          set -euo pipefail
+          BASE="origin/${{ github.base_ref }}"
+          git fetch origin "${{ github.base_ref }}" --depth=50 || true
+          git diff --stat "$BASE"...HEAD > /tmp/diffstat.txt || git diff --stat HEAD~1...HEAD > /tmp/diffstat.txt
+          git diff "$BASE"...HEAD | head -c 120000 > /tmp/diff.patch || true
+          wc -c /tmp/diffstat.txt /tmp/diff.patch
+
+      - name: Grok review (sandboxed)
+        if: steps.secret.outputs.present == 'true'
+        id: review
+        run: |
+          set -euo pipefail
+          PROMPT=$(cat <<'EOF'
+          You are a sandboxed PR reviewer for a production client repo.
+          Rank findings: blocker / major / nit.
+          Focus on bugs, security, missing tests, deploy/money risks, broken UX.
+          Do not edit files. Do not invent files you cannot see.
+          End with exactly one line:
+          VERDICT: APPROVE|REQUEST_CHANGES|HOLD — <one-line reason>
+          EOF
+          )
+          {
+            echo "$PROMPT"
+            echo
+            echo "# PR"
+            echo "title: ${{ github.event.pull_request.title }}"
+            echo "base: ${{ github.base_ref }}  head: ${{ github.head_ref }}"
+            echo
+            echo "# DIFF STAT"
+            cat /tmp/diffstat.txt
+            echo
+            echo "# DIFF (truncated)"
+            cat /tmp/diff.patch
+          } > /tmp/prompt.txt
+
+          if command -v grok-kyle >/dev/null 2>&1; then
+            grok-kyle ask "$(cat /tmp/prompt.txt)" --sandbox kyle-review --max-turns 12 > /tmp/review.md
+          else
+            grok -p "$(cat /tmp/prompt.txt)" \
+              --sandbox read-only \
+              --disallowed-tools "search_replace,run_terminal_cmd" \
+              --max-turns 12 \
+              --output-format plain \
+              --no-memory > /tmp/review.md
+          fi
+          grep -E '^VERDICT:' /tmp/review.md || echo "VERDICT: HOLD — no explicit verdict line"
+
+      - name: Upload review artifact
+        if: always() && steps.secret.outputs.present == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: grok-review-pr-${{ github.event.pull_request.number }}
+          path: /tmp/review.md
+          if-no-files-found: ignore
+
+      - name: Sticky PR comment
+        if: steps.secret.outputs.present == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let body = '';
+            try { body = fs.readFileSync('/tmp/review.md', 'utf8').slice(0, 60000); }
+            catch (e) { body = '_Review failed or timed out — check Actions logs._'; }
+            const marker = '<!-- grok-build-sandboxed-review -->';
+            const full = `${marker}
+## Grok Build · Sandboxed Second Pass
+
+${body}
+
+---
+_Open-source harness · read-only tools · VERDICT drives merge confidence_`;
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              per_page: 100,
+            });
+            const existing = comments.find(c => (c.body || '').includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body: full,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: full,
+              });
+            }
